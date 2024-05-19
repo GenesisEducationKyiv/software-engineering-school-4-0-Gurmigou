@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"log"
 	"net/smtp"
+	"os"
 	"se-school-case/dto"
 	"se-school-case/initializer"
 	"se-school-case/model"
@@ -13,7 +14,7 @@ import (
 )
 
 func SendEmailNotificationsToAll() {
-	sendEmailToAll("Exchange rate notification", "./resource/email.html")
+	sendEmailToAll("Exchange rate notification", os.Getenv("TEMPLATE_PATH"))
 }
 
 // SendEmailToAll sends emails to all users in the database with the current exchange rate.
@@ -69,8 +70,8 @@ func sendEmail(subject string, templatePath string, sendTo string, rate float64)
 
 	auth := smtp.PlainAuth(
 		"",
-		"se.school.case.2024.notification@gmail.com",
-		"tyctaulbmtblferm",
+		os.Getenv("GOOGLE_USERNAME"),
+		os.Getenv("GOOGLE_PASSWORD"),
 		"smtp.gmail.com",
 	)
 
@@ -81,7 +82,7 @@ func sendEmail(subject string, templatePath string, sendTo string, rate float64)
 	err = smtp.SendMail(
 		"smtp.gmail.com:587",
 		auth,
-		"se.school.case.2024.notification@gmail.com",
+		os.Getenv("GOOGLE_USERNAME"),
 		[]string{sendTo},
 		[]byte(msg),
 	)

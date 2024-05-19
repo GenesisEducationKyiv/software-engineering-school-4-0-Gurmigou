@@ -4,9 +4,9 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
-	"io/ioutil"
 	"log"
 	"net/http"
+	"os"
 	"se-school-case/dto"
 	"se-school-case/initializer"
 	"se-school-case/model"
@@ -15,12 +15,11 @@ import (
 )
 
 const (
-	rateURL        = "https://api.privatbank.ua/p24api/pubinfo?json&exchange&coursid=5"
 	updateInterval = 1 * time.Hour
 )
 
 func fetchExchangeRate() {
-	resp, err := http.Get(rateURL)
+	resp, err := http.Get(os.Getenv("RATE_API_URL"))
 	if err != nil {
 		fmt.Println("Error fetching exchange rate")
 		return
@@ -31,7 +30,7 @@ func fetchExchangeRate() {
 		}
 	}(resp.Body)
 
-	body, err := ioutil.ReadAll(resp.Body)
+	body, err := io.ReadAll(resp.Body)
 	if err != nil {
 		log.Printf("Error reading response body: %v", err)
 		return
