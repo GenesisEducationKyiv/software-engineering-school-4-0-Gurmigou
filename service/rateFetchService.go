@@ -46,9 +46,9 @@ func fetchExchangeRate() {
 	}
 
 	for _, rate := range rates {
-		if rate.CCY == "USD" && rate.BaseCCY == "UAH" {
+		if rate.CCY == DefaultCurrentFrom && rate.BaseCCY == DefaultCurrentTo {
 			exchangeRate := parseFloat(rate.Sale)
-			writeResultToDatabase("USD", "UAH", exchangeRate)
+			writeResultToDatabase(DefaultCurrentFrom, DefaultCurrentTo, exchangeRate)
 			break
 		}
 	}

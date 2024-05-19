@@ -6,13 +6,13 @@ import (
 )
 
 const (
-	defaultCurrentFrom = "USD"
-	defaultCurrentTo   = "UAH"
+	DefaultCurrentFrom = "USD"
+	DefaultCurrentTo   = "UAH"
 )
 
 func GetLatestRate() (model.Rate, error) {
 	var rate model.Rate
 	err := initializer.DB.Where("currency_from = ? AND currency_to = ?",
-		defaultCurrentFrom, defaultCurrentTo).First(&rate).Error
+		DefaultCurrentFrom, DefaultCurrentTo).First(&rate).Error
 	return rate, err
 }

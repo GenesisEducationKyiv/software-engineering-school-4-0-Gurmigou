@@ -30,3 +30,8 @@ func PostAddUserEmail(c *gin.Context) {
 	// Email successfully added
 	c.JSON(http.StatusOK, gin.H{"message": "Email added successfully"})
 }
+
+func PostExplicitlyNotify(c *gin.Context) {
+	service.SendEmailNotificationsToAll()
+	c.JSON(http.StatusOK, gin.H{"message": "Successfully notified all users."})
+}
