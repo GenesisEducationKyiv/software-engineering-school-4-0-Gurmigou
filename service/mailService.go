@@ -46,7 +46,7 @@ func sendEmailToAll(subject string, templatePath string) {
 		return
 	}
 
-	rate, err := getLatestRate()
+	rate, err := GetRate()
 	if err != nil {
 		log.Fatalf("Failed to get latest rate: %v", err)
 		return
@@ -64,13 +64,6 @@ func getAllUsers() ([]model.User, error) {
 	var users []model.User
 	err := initializer.DB.Find(&users).Error
 	return users, err
-}
-
-func getLatestRate() (model.Rate, error) {
-	var rate model.Rate
-	err := initializer.DB.Where("currency_from = ? AND currency_to = ?",
-		DefaultCurrentFrom, DefaultCurrentTo).First(&rate).Error
-	return rate, err
 }
 
 func sendEmail(subject string, templatePath string, sendTo string, rate float64) error {
