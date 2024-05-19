@@ -11,11 +11,6 @@ import (
 	"se-school-case/initializer"
 	"se-school-case/model"
 	"strconv"
-	"time"
-)
-
-const (
-	updateInterval = 1 * time.Hour
 )
 
 func fetchExchangeRate() {
@@ -27,6 +22,7 @@ func fetchExchangeRate() {
 	defer func(Body io.ReadCloser) {
 		err := Body.Close()
 		if err != nil {
+			log.Printf("Error closing response body: %v", err)
 		}
 	}(resp.Body)
 
@@ -64,7 +60,7 @@ func writeResultToDatabase(currencyFrom string, currencyTo string, exchangeRate 
 	// Add new rate record
 	rate := model.Rate{CurrencyFrom: currencyFrom, CurrencyTo: currencyTo, Rate: exchangeRate}
 	if err := initializer.DB.Create(&rate).Error; err != nil {
-		log.Printf("Error to write exchange rate to database: %v", err)
+		log.Printf("Error writing exchange rate to database: %v", err)
 		return
 	}
 }
@@ -76,13 +72,4 @@ func parseFloat(value string) float64 {
 		return 0.0
 	}
 	return result
-}
-
-func StartRateUpdater() {
-	go func() {
-		for {
-			fetchExchangeRate()
-			time.Sleep(updateInterval)
-		}
-	}()
 }

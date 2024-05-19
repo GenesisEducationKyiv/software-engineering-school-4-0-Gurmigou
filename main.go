@@ -4,14 +4,12 @@ import (
 	"github.com/gin-gonic/gin"
 	"se-school-case/controller"
 	"se-school-case/initializer"
-	"se-school-case/service"
 )
 
 func init() {
 	initializer.LoadEnvVariables()
 	initializer.ConnectToDatabase()
 	initializer.AutoMigrateDatabase()
-	service.StartRateUpdater()
 }
 
 func main() {
