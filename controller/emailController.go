@@ -13,7 +13,7 @@ func PostAddUserEmail(c *gin.Context) {
 
 	// Bind input
 	if err := c.ShouldBind(&input); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid email format"})
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Email request body is not correct."})
 		return
 	}
 
