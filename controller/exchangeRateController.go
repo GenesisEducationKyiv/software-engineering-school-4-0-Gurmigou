@@ -13,5 +13,5 @@ func GetExchangeRate(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, gin.H{"rate": rate.Rate})
+	c.String(http.StatusOK, "%f", rate.Rate)
 }
