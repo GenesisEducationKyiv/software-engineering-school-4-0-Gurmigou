@@ -3,6 +3,7 @@ package service
 import (
 	"bytes"
 	"fmt"
+	"github.com/go-co-op/gocron"
 	"log"
 	"net/smtp"
 	"os"
@@ -12,6 +13,26 @@ import (
 	"text/template"
 	"time"
 )
+
+// StartScheduledEmail starts a goroutine to send email notifications
+// at a specified time every day using gocron.
+func StartScheduledEmail() {
+	emailTime := os.Getenv("EMAIL_SEND_TIME") // expected format "15:04"
+	if emailTime == "" {
+		log.Fatalf("EMAIL_SEND_TIME environment variable not set")
+	}
+
+	scheduler := gocron.NewScheduler(time.Local)
+
+	// Schedule the email job
+	_, err := scheduler.Every(1).Day().At(emailTime).Do(SendEmailNotificationsToAll)
+	if err != nil {
+		log.Fatalf("Error scheduling email notifications: %v", err)
+	}
+
+	// Start the scheduler
+	scheduler.StartAsync()
+}
 
 func SendEmailNotificationsToAll() {
 	sendEmailToAll("Exchange rate notification", os.Getenv("TEMPLATE_PATH"))
