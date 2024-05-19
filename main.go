@@ -10,7 +10,7 @@ import (
 func init() {
 	initializer.LoadEnvVariables()
 	initializer.ConnectToDatabase()
-	initializer.AutoMigrateDatabase()
+	initializer.RunMigrations()
 	service.StartScheduledEmail()
 }
 
