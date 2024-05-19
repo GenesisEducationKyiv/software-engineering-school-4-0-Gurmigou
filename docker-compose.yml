@@ -1,0 +1,36 @@
+version: '3.8'
+
+services:
+  db:
+    image: postgres:latest
+    container_name: postgres
+    environment:
+      POSTGRES_USER: root
+      POSTGRES_PASSWORD: root
+      POSTGRES_DB: case
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: se-school-case
+    ports:
+      - "3000:3000"
+    depends_on:
+      - db
+    environment:
+      PORT: 3000
+      DB_URL: "host=db user=root password=root dbname=case port=5432 sslmode=disable"
+      DB_FULL_URL: "postgres://root:root@db:5432/case?sslmode=disable"
+      RATE_API_URL: "https://api.privatbank.ua/p24api/pubinfo?json&exchange&coursid=5"
+      GOOGLE_USERNAME: "se.school.case.2024.notification@gmail.com"
+      GOOGLE_PASSWORD: "tyctaulbmtblferm"
+      TEMPLATE_PATH: "./resource/email.html"
+      EMAIL_SEND_TIME: "17:43"
+
+volumes:
+  postgres_data:
