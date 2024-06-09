@@ -3,7 +3,7 @@ package controller
 import (
 	"github.com/gin-gonic/gin"
 	"net/http"
-	"se-school-case/service"
+	"se-school-case/pkg/service"
 )
 
 func GetExchangeRate(c *gin.Context) {

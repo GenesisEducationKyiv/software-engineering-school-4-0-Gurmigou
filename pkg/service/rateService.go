@@ -2,8 +2,8 @@ package service
 
 import (
 	"errors"
-	"se-school-case/initializer"
-	"se-school-case/model"
+	"se-school-case/pkg/initializer"
+	"se-school-case/pkg/model"
 	"time"
 )
 

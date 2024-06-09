@@ -2,15 +2,15 @@ package main
 
 import (
 	"github.com/gin-gonic/gin"
-	"se-school-case/controller"
-	"se-school-case/initializer"
-	"se-school-case/service"
+	controller2 "se-school-case/pkg/controller"
+	initializer2 "se-school-case/pkg/initializer"
+	"se-school-case/pkg/service"
 )
 
 func init() {
-	initializer.LoadEnvVariables()
-	initializer.ConnectToDatabase()
-	initializer.RunMigrations()
+	initializer2.LoadEnvVariables()
+	initializer2.ConnectToDatabase()
+	initializer2.RunMigrations()
 	service.StartScheduledEmail()
 }
 
@@ -25,11 +25,11 @@ func main() {
 	r.GET("/api/ping", func(c *gin.Context) {
 		c.JSON(200, gin.H{"message": "pong"})
 	})
-	r.POST("/api/notify", controller.PostExplicitlyNotify)
+	r.POST("/api/notify", controller2.PostExplicitlyNotify)
 
 	// Required end-points
-	r.POST("/api/subscribe", controller.PostAddUserEmail)
-	r.GET("/api/rate", controller.GetExchangeRate)
+	r.POST("/api/subscribe", controller2.PostAddUserEmail)
+	r.GET("/api/rate", controller2.GetExchangeRate)
 
-	initializer.StartServer(r)
+	initializer2.StartServer(r)
 }
