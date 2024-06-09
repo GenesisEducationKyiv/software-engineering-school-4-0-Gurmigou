@@ -1,6 +1,6 @@
 package dto
 
-type RateApiDto struct {
+type RateAPIDto struct {
 	CCY     string `json:"ccy"`
 	BaseCCY string `json:"base_ccy"`
 	Buy     string `json:"buy"`

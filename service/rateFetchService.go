@@ -32,7 +32,7 @@ func fetchExchangeRate() {
 		return
 	}
 
-	var rates []dto.RateApiDto
+	var rates []dto.RateAPIDto
 
 	err = json.Unmarshal(body, &rates)
 	if err != nil {
