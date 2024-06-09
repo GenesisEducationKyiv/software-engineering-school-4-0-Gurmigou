@@ -1,0 +1,23 @@
+run:
+  timeout: 5m
+
+linters:
+  enable:
+    - nestif
+    - funlen
+    - lll
+    - forcetypeassert
+    - gofumpt
+    - govet
+    - staticcheck
+    - revive
+    - errorlint
+    - exportloopref
+    - cyclop
+    - unparam
+    - unused
+
+linters-settings:
+  funlen:
+    ignore-comments: true
+    lines: 50
