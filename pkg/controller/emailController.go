@@ -5,7 +5,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"net/http"
 	"se-school-case/pkg/dto"
-	service2 "se-school-case/pkg/service"
+	service "se-school-case/pkg/service"
 )
 
 func PostAddUserEmail(c *gin.Context) {
@@ -18,8 +18,8 @@ func PostAddUserEmail(c *gin.Context) {
 	}
 
 	// Handle email subscription in service layer
-	if err := service2.HandleEmailSubscription(input.Email); err != nil {
-		if errors.Is(err, service2.ErrEmailAlreadyExists) {
+	if err := service.HandleEmailSubscription(input.Email); err != nil {
+		if errors.Is(err, service.ErrEmailAlreadyExists) {
 			c.JSON(http.StatusConflict, gin.H{"error": "Email already exists"})
 		} else {
 			c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to add email"})
@@ -32,6 +32,6 @@ func PostAddUserEmail(c *gin.Context) {
 }
 
 func PostExplicitlyNotify(c *gin.Context) {
-	service2.SendEmailNotificationsToAll()
+	service.SendEmailNotificationsToAll()
 	c.JSON(http.StatusOK, gin.H{"message": "Successfully notified all users."})
 }
