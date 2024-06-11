@@ -4,8 +4,8 @@ import (
 	"errors"
 	"github.com/gin-gonic/gin"
 	"net/http"
-	"se-school-case/dto"
-	"se-school-case/service"
+	"se-school-case/pkg/dto"
+	service "se-school-case/pkg/service"
 )
 
 func PostAddUserEmail(c *gin.Context) {

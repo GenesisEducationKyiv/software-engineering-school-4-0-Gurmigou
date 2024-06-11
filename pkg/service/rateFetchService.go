@@ -7,9 +7,9 @@ import (
 	"log"
 	"net/http"
 	"os"
-	"se-school-case/dto"
-	"se-school-case/initializer"
-	"se-school-case/model"
+	"se-school-case/pkg/dto"
+	"se-school-case/pkg/initializer"
+	"se-school-case/pkg/model"
 	"strconv"
 )
 
@@ -32,7 +32,7 @@ func fetchExchangeRate() {
 		return
 	}
 
-	var rates []dto.RateApiDto
+	var rates []dto.RateAPIDto
 
 	err = json.Unmarshal(body, &rates)
 	if err != nil {

@@ -2,9 +2,9 @@ package main
 
 import (
 	"github.com/gin-gonic/gin"
-	"se-school-case/controller"
-	"se-school-case/initializer"
-	"se-school-case/service"
+	controller "se-school-case/pkg/controller"
+	initializer "se-school-case/pkg/initializer"
+	"se-school-case/pkg/service"
 )
 
 func init() {

@@ -3,8 +3,8 @@ package service
 import (
 	"errors"
 	"gorm.io/gorm"
-	"se-school-case/initializer"
-	"se-school-case/model"
+	"se-school-case/pkg/initializer"
+	"se-school-case/pkg/model"
 )
 
 // ErrEmailAlreadyExists Custom errors
