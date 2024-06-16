@@ -10,7 +10,7 @@ import (
 // ErrEmailAlreadyExists Custom errors
 var ErrEmailAlreadyExists = errors.New("email already exists")
 
-func HandleEmailSubscription(email string) error {
+func AddUserSubscription(email string) error {
 	// Check if email already exists
 	exists, err := CheckIfUserExists(email)
 	if err != nil {
@@ -45,4 +45,10 @@ func AddUserEmail(email string) error {
 		return err
 	}
 	return nil
+}
+
+func GetAllUsers() ([]model.User, error) {
+	var users []model.User
+	err := initializer.DB.Find(&users).Error
+	return users, err
 }

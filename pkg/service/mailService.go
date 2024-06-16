@@ -8,8 +8,6 @@ import (
 	"net/smtp"
 	"os"
 	"se-school-case/pkg/dto"
-	"se-school-case/pkg/initializer"
-	"se-school-case/pkg/model"
 	"text/template"
 	"time"
 )
@@ -40,7 +38,7 @@ func SendEmailNotificationsToAll() {
 
 // SendEmailToAll sends emails to all users in the database with the current exchange rate.
 func sendEmailToAll(subject string, templatePath string) {
-	users, err := getAllUsers()
+	users, err := GetAllUsers()
 	if err != nil {
 		log.Fatalf("Failed to get users: %v", err)
 		return
@@ -58,12 +56,6 @@ func sendEmailToAll(subject string, templatePath string) {
 			log.Printf("Failed to send email to %s: %v", user.Email, err)
 		}
 	}
-}
-
-func getAllUsers() ([]model.User, error) {
-	var users []model.User
-	err := initializer.DB.Find(&users).Error
-	return users, err
 }
 
 func sendEmail(subject string, templatePath string, sendTo string, rate float64) error {

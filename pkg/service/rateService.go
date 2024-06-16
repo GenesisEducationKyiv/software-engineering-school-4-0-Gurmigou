@@ -2,6 +2,7 @@ package service
 
 import (
 	"errors"
+	"log"
 	"se-school-case/pkg/initializer"
 	"se-school-case/pkg/model"
 	"time"
@@ -50,4 +51,20 @@ func GetRate() (model.Rate, error) {
 	}
 
 	return rate, nil
+}
+
+func SaveRate(currencyFrom string, currencyTo string, exchangeRate float64) {
+	// Delete existing rate records where CurrencyFrom and CurrencyTo match
+	if err := initializer.DB.Where("currency_from = ? AND currency_to = ?",
+		currencyFrom, currencyTo).Delete(&model.Rate{}).Error; err != nil {
+		log.Printf("Error deleting old exchange rates: %v", err)
+		return
+	}
+
+	// Add new rate record
+	rate := model.Rate{CurrencyFrom: currencyFrom, CurrencyTo: currencyTo, Rate: exchangeRate}
+	if err := initializer.DB.Create(&rate).Error; err != nil {
+		log.Printf("Error writing exchange rate to database: %v", err)
+		return
+	}
 }
