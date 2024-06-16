@@ -54,7 +54,7 @@ func sendEmailToAll(subject string, templatePath string) {
 	for _, user_ := range users {
 		err := sendEmail(subject, templatePath, user_.Email, rate_.Rate)
 		if err != nil {
-			log.Printf("Failed to send email to %s: %v", user.Email, err)
+			log.Printf("Failed to send email to %s: %v", user_.Email, err)
 		}
 	}
 }
