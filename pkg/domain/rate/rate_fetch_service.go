@@ -1,4 +1,4 @@
-package service
+package rate
 
 import (
 	"encoding/json"
@@ -7,7 +7,6 @@ import (
 	"log"
 	"net/http"
 	"os"
-	"se-school-case/pkg/dto"
 	"strconv"
 )
 
@@ -30,7 +29,7 @@ func fetchExchangeRate() {
 		return
 	}
 
-	var rates []dto.RateAPIDto
+	var rates []RateAPIDto
 
 	err = json.Unmarshal(body, &rates)
 	if err != nil {

@@ -1,4 +1,4 @@
-package service
+package mail
 
 import (
 	"bytes"
@@ -7,7 +7,8 @@ import (
 	"log"
 	"net/smtp"
 	"os"
-	"se-school-case/pkg/dto"
+	"se-school-case/pkg/domain/rate"
+	"se-school-case/pkg/domain/user"
 	"text/template"
 	"time"
 )
@@ -38,20 +39,20 @@ func SendEmailNotificationsToAll() {
 
 // SendEmailToAll sends emails to all users in the database with the current exchange rate.
 func sendEmailToAll(subject string, templatePath string) {
-	users, err := GetAllUsers()
+	users, err := user.GetAllUsers()
 	if err != nil {
 		log.Fatalf("Failed to get users: %v", err)
 		return
 	}
 
-	rate, err := GetRate()
+	rate_, err := rate.GetRate()
 	if err != nil {
 		log.Fatalf("Failed to get latest rate: %v", err)
 		return
 	}
 
-	for _, user := range users {
-		err := sendEmail(subject, templatePath, user.Email, rate.Rate)
+	for _, user_ := range users {
+		err := sendEmail(subject, templatePath, user_.Email, rate_.Rate)
 		if err != nil {
 			log.Printf("Failed to send email to %s: %v", user.Email, err)
 		}
@@ -65,7 +66,7 @@ func sendEmail(subject string, templatePath string, sendTo string, rate float64)
 		return err
 	}
 
-	err = t.Execute(&body, dto.EmailSendDto{
+	err = t.Execute(&body, EmailSendDto{
 		Email:       sendTo,
 		CurrentDate: getCurrentDateString(),
 		Rate:        fmt.Sprintf("%.2f", rate),

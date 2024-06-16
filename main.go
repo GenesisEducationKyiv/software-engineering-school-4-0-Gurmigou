@@ -2,16 +2,16 @@ package main
 
 import (
 	"github.com/gin-gonic/gin"
-	controller "se-school-case/pkg/controller"
-	initializer "se-school-case/pkg/initializer"
-	"se-school-case/pkg/service"
+	"se-school-case/pkg/controller"
+	"se-school-case/pkg/domain/mail"
+	"se-school-case/pkg/initializer"
 )
 
 func init() {
 	initializer.LoadEnvVariables()
 	initializer.ConnectToDatabase()
 	initializer.RunMigrations()
-	service.StartScheduledEmail()
+	mail.StartScheduledEmail()
 }
 
 func main() {
