@@ -4,12 +4,12 @@ import (
 	"errors"
 	"github.com/gin-gonic/gin"
 	"net/http"
-	mail2 "se-school-case/pkg/domain/mail"
+	"se-school-case/pkg/domain/mail"
 	"se-school-case/pkg/domain/user"
 )
 
 func PostAddUserEmail(c *gin.Context) {
-	var input mail2.EmailDto
+	var input mail.EmailDto
 
 	// Bind input
 	if err := c.ShouldBind(&input); err != nil {
@@ -32,6 +32,6 @@ func PostAddUserEmail(c *gin.Context) {
 }
 
 func PostExplicitlyNotify(c *gin.Context) {
-	mail2.SendEmailNotificationsToAll()
+	mail.SendEmailNotificationsToAll()
 	c.JSON(http.StatusOK, gin.H{"message": "Successfully notified all users."})
 }

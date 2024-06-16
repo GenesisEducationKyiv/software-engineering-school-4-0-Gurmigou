@@ -45,16 +45,16 @@ func sendEmailToAll(subject string, templatePath string) {
 		return
 	}
 
-	rate_, err := rate.GetRate()
+	rateResp, err := rate.GetRate()
 	if err != nil {
 		log.Fatalf("Failed to get latest rate: %v", err)
 		return
 	}
 
-	for _, user_ := range users {
-		err := sendEmail(subject, templatePath, user_.Email, rate_.Rate)
+	for _, userResp := range users {
+		err := sendEmail(subject, templatePath, userResp.Email, rateResp.Rate)
 		if err != nil {
-			log.Printf("Failed to send email to %s: %v", user_.Email, err)
+			log.Printf("Failed to send email to %s: %v", userResp.Email, err)
 		}
 	}
 }

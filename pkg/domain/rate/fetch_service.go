@@ -43,6 +43,7 @@ func fetchExchangeRate() {
 			SaveRate(DefaultCurrentFrom, DefaultCurrentTo, exchangeRate)
 			break
 		}
+
 	}
 }
 

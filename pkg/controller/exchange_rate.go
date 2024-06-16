@@ -7,11 +7,11 @@ import (
 )
 
 func GetExchangeRate(c *gin.Context) {
-	rate_, err := rate.GetRate()
+	rateResp, err := rate.GetRate()
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to get the latest rate"})
 		return
 	}
 
-	c.String(http.StatusOK, "%f", rate_.Rate)
+	c.String(http.StatusOK, "%f", rateResp.Rate)
 }
