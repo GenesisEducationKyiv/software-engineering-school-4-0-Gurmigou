@@ -16,15 +16,17 @@ type dependencies struct {
 }
 
 func wireDependencies() *dependencies {
+	initializer.LoadEnvVariables()
 	initializer.RunMigrations()
 	db := initializer.ConnectToDatabase()
 	rateService := rate.NewService(db)
 	subscriberService := subscriber.NewService(db)
 	mailService := mail.NewService(subscriberService, rateService)
-	cron_jobs.NewService(mailService)
+	cronService := cron_jobs.NewService(mailService)
 	return &dependencies{
 		subscriberService: subscriberService,
 		rateService:       rateService,
 		mailService:       mailService,
+		cronService:       cronService,
 	}
 }

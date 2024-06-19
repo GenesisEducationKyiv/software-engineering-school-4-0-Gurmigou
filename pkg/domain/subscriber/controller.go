@@ -4,7 +4,6 @@ import (
 	"errors"
 	"github.com/gin-gonic/gin"
 	"net/http"
-	"se-school-case/pkg/domain/mail"
 	"se-school-case/pkg/util/app-error"
 )
 
@@ -19,7 +18,7 @@ func NewController(router *gin.Engine, subscriberService Service) *Controller {
 }
 
 func (c *Controller) AddUserEmail(context *gin.Context) {
-	var input mail.EmailDto
+	var input EmailDto
 
 	// Bind input
 	if err := context.ShouldBind(&input); err != nil {
