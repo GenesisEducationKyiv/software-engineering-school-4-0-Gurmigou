@@ -3,63 +3,52 @@ package mail
 import (
 	"bytes"
 	"fmt"
-	"github.com/go-co-op/gocron"
 	"log"
 	"net/smtp"
 	"os"
 	"se-school-case/pkg/domain/rate"
-	"se-school-case/pkg/domain/user"
+	"se-school-case/pkg/domain/subscriber"
+	"se-school-case/pkg/util"
 	"text/template"
-	"time"
 )
 
-// StartScheduledEmail starts a goroutine to send email notifications
-// at a specified time every day using gocron.
-func StartScheduledEmail() {
-	emailTime := os.Getenv("EMAIL_SEND_TIME") // expected format "15:04"
-	if emailTime == "" {
-		log.Fatalf("EMAIL_SEND_TIME environment variable not set")
-	}
-
-	scheduler := gocron.NewScheduler(time.Local)
-
-	// Schedule the email job
-	_, err := scheduler.Every(1).Day().At(emailTime).Do(SendEmailNotificationsToAll)
-	if err != nil {
-		log.Fatalf("Error scheduling email notifications: %v", err)
-	}
-
-	// Start the scheduler
-	scheduler.StartAsync()
+type Service interface {
+	SendEmailToAll(subject string, templatePath string)
+	SendEmail(subject string, templatePath string, sendTo string, rate float64) error
 }
 
-func SendEmailNotificationsToAll() {
-	sendEmailToAll("Exchange rate notification", os.Getenv("TEMPLATE_PATH"))
+type service struct {
+	subscriberService subscriber.Service
+	rateService       rate.Service
+}
+
+func NewService(subscriberService subscriber.Service, rateService rate.Service) Service {
+	return &service{subscriberService, rateService}
 }
 
 // SendEmailToAll sends emails to all users in the database with the current exchange rate.
-func sendEmailToAll(subject string, templatePath string) {
-	users, err := user.GetAllUsers()
+func (s *service) SendEmailToAll(subject string, templatePath string) {
+	users, err := s.subscriberService.GetAll()
 	if err != nil {
 		log.Fatalf("Failed to get users: %v", err)
 		return
 	}
 
-	rateResp, err := rate.GetRate()
+	rateResp, err := s.rateService.GetRate()
 	if err != nil {
 		log.Fatalf("Failed to get latest rate: %v", err)
 		return
 	}
 
 	for _, userResp := range users {
-		err := sendEmail(subject, templatePath, userResp.Email, rateResp.Rate)
+		err := s.SendEmail(subject, templatePath, userResp.Email, rateResp.Rate)
 		if err != nil {
 			log.Printf("Failed to send email to %s: %v", userResp.Email, err)
 		}
 	}
 }
 
-func sendEmail(subject string, templatePath string, sendTo string, rate float64) error {
+func (s *service) SendEmail(subject string, templatePath string, sendTo string, rate float64) error {
 	var body bytes.Buffer
 	t, err := template.ParseFiles(templatePath)
 	if err != nil {
@@ -68,7 +57,7 @@ func sendEmail(subject string, templatePath string, sendTo string, rate float64)
 
 	err = t.Execute(&body, EmailSendDto{
 		Email:       sendTo,
-		CurrentDate: getCurrentDateString(),
+		CurrentDate: util.GetCurrentDateString(),
 		Rate:        fmt.Sprintf("%.2f", rate),
 	})
 	if err != nil {
@@ -94,9 +83,4 @@ func sendEmail(subject string, templatePath string, sendTo string, rate float64)
 		[]byte(msg),
 	)
 	return err
-}
-
-func getCurrentDateString() string {
-	currentDate := time.Now().Format("2006-01-02 15:04")
-	return currentDate
 }
