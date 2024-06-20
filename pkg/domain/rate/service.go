@@ -8,7 +8,6 @@ import (
 	"io"
 	"log"
 	"net/http"
-	"os"
 	"se-school-case/pkg/model"
 	"se-school-case/pkg/util"
 	"se-school-case/pkg/util/constants"
@@ -74,7 +73,7 @@ func (s *service) SaveRate(currencyFrom string, currencyTo string, exchangeRate 
 }
 
 func (s *service) FetchExchangeRate() {
-	resp, err := http.Get(os.Getenv("RATE_API_URL"))
+	resp, err := http.Get(constants.RATE_API_URL)
 	if err != nil {
 		fmt.Println("Error fetching exchange rate")
 		return

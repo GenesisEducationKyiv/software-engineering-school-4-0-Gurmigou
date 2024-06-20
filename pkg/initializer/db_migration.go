@@ -4,7 +4,7 @@ import (
 	"database/sql"
 	"errors"
 	"log"
-	"os"
+	"se-school-case/pkg/util/constants"
 
 	"github.com/golang-migrate/migrate/v4"
 	"github.com/golang-migrate/migrate/v4/database/postgres"
@@ -13,8 +13,7 @@ import (
 )
 
 func RunMigrations() {
-	db, err := sql.Open("postgres",
-		os.Getenv("DB_FULL_URL"))
+	db, err := sql.Open("postgres", constants.DB_FULL_URL)
 	if err != nil {
 		log.Fatalf("Could not connect to the database: %v", err)
 	}

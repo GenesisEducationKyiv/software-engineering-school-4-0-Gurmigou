@@ -5,10 +5,10 @@ import (
 	"fmt"
 	"log"
 	"net/smtp"
-	"os"
 	"se-school-case/pkg/domain/rate"
 	"se-school-case/pkg/domain/subscriber"
 	"se-school-case/pkg/util"
+	"se-school-case/pkg/util/constants"
 	"text/template"
 )
 
@@ -66,8 +66,8 @@ func (s *service) SendEmail(subject string, templatePath string, sendTo string, 
 
 	auth := smtp.PlainAuth(
 		"",
-		os.Getenv("GOOGLE_USERNAME"),
-		os.Getenv("GOOGLE_PASSWORD"),
+		constants.GOOGLE_USERNAME,
+		constants.GOOGLE_PASSWORD,
 		"smtp.gmail.com",
 	)
 
@@ -78,7 +78,7 @@ func (s *service) SendEmail(subject string, templatePath string, sendTo string, 
 	err = smtp.SendMail(
 		"smtp.gmail.com:587",
 		auth,
-		os.Getenv("GOOGLE_USERNAME"),
+		constants.GOOGLE_USERNAME,
 		[]string{sendTo},
 		[]byte(msg),
 	)

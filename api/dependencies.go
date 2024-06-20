@@ -1,11 +1,13 @@
 package api
 
 import (
+	"gorm.io/gorm"
 	cron_jobs "se-school-case/pkg/domain/cron-jobs"
 	"se-school-case/pkg/domain/mail"
 	"se-school-case/pkg/domain/rate"
 	"se-school-case/pkg/domain/subscriber"
 	"se-school-case/pkg/initializer"
+	"se-school-case/pkg/util/constants"
 )
 
 type dependencies struct {
@@ -16,9 +18,8 @@ type dependencies struct {
 }
 
 func wireDependencies() *dependencies {
-	initializer.LoadEnvVariables()
-	initializer.RunMigrations()
-	db := initializer.ConnectToDatabase()
+	initEnv()
+	db := connectToDb()
 	rateService := rate.NewService(db)
 	subscriberService := subscriber.NewService(db)
 	mailService := mail.NewService(subscriberService, rateService)
@@ -29,4 +30,15 @@ func wireDependencies() *dependencies {
 		mailService:       mailService,
 		cronService:       cronService,
 	}
+}
+
+func initEnv() {
+	initializer.LoadEnvVariables()
+	constants.InitEnvValues()
+}
+
+func connectToDb() *gorm.DB {
+	initializer.RunMigrations()
+	db := initializer.ConnectToDatabase()
+	return db
 }
