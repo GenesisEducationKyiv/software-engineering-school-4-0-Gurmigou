@@ -1,15 +1,10 @@
 package rate
 
 import (
-	"encoding/json"
 	"errors"
-	"fmt"
 	"gorm.io/gorm"
-	"io"
 	"log"
-	"net/http"
 	"se-school-case/pkg/model"
-	"se-school-case/pkg/util"
 	"se-school-case/pkg/util/constants"
 	"time"
 )
@@ -20,11 +15,12 @@ type Service interface {
 }
 
 type service struct {
-	repository *gorm.DB
+	repository   *gorm.DB
+	fetchService FetchService
 }
 
-func NewService(repository *gorm.DB) Service {
-	return &service{repository}
+func NewService(repository *gorm.DB, fetchService FetchService) Service {
+	return &service{repository: repository, fetchService: fetchService}
 }
 
 var ErrNoRateFound = errors.New("no rate found")
@@ -34,7 +30,11 @@ func (s *service) GetRate() (model.Rate, error) {
 	if err != nil {
 		if errors.Is(err, ErrNoRateFound) || err.Error() == "record not found" {
 			// Fetch exchange rate if no rate found
-			s.FetchExchangeRate()
+			exchangeRate, fetchErr := s.fetchService.FetchExchangeRate()
+			if fetchErr != nil {
+				return model.Rate{}, fetchErr
+			}
+			s.SaveRate(constants.DefaultCurrentFrom, constants.DefaultCurrentTo, exchangeRate)
 			rate, err = s.getLatestRate()
 			if err != nil {
 				return model.Rate{}, err
@@ -46,7 +46,11 @@ func (s *service) GetRate() (model.Rate, error) {
 
 	// Check if the rate is more than 1 hour old
 	if time.Since(rate.CreatedAt) > constants.UpdateInterval {
-		s.FetchExchangeRate()
+		exchangeRate, fetchErr := s.fetchService.FetchExchangeRate()
+		if fetchErr != nil {
+			return model.Rate{}, fetchErr
+		}
+		s.SaveRate(constants.DefaultCurrentFrom, constants.DefaultCurrentTo, exchangeRate)
 		rate, err = s.getLatestRate()
 		if err != nil {
 			return model.Rate{}, err
@@ -68,42 +72,6 @@ func (s *service) SaveRate(currencyFrom string, currencyTo string, exchangeRate 
 	if err := s.repository.Create(&rate).Error; err != nil {
 		log.Printf("Error writing exchange rate to database: %v", err)
 		return
-	}
-}
-
-func (s *service) FetchExchangeRate() {
-	resp, err := http.Get(constants.RATE_API_URL)
-	if err != nil {
-		fmt.Println("Error fetching exchange rate")
-		return
-	}
-	defer func(Body io.ReadCloser) {
-		err := Body.Close()
-		if err != nil {
-			log.Printf("Error closing response body: %v", err)
-		}
-	}(resp.Body)
-
-	body, err := io.ReadAll(resp.Body)
-	if err != nil {
-		log.Printf("Error reading response body: %v", err)
-		return
-	}
-
-	var rates []RateAPIDto
-
-	err = json.Unmarshal(body, &rates)
-	if err != nil {
-		log.Printf("Error unmarshaling response: %v", err)
-		return
-	}
-
-	for _, rateResp := range rates {
-		if rateResp.CCY == constants.DefaultCurrentFrom && rateResp.BaseCCY == constants.DefaultCurrentTo {
-			exchangeRate := util.ParseFloat(rateResp.Sale)
-			s.SaveRate(constants.DefaultCurrentFrom, constants.DefaultCurrentTo, exchangeRate)
-			break
-		}
 	}
 }
 
