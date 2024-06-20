@@ -7,12 +7,10 @@ import (
 	"se-school-case/pkg/util/constants"
 )
 
-// Controller defines the structure for the controller
 type Controller struct {
 	mailService mail.Service
 }
 
-// NewController initializes the routes and returns a controller instance
 func NewController(router *gin.Engine, mailService mail.Service) *Controller {
 	ctrl := &Controller{mailService: mailService}
 	router.POST("/api/notify", ctrl.PostExplicitlyNotify)

@@ -26,7 +26,6 @@ func NewService(subscriberService subscriber.Service, rateService rate.Service) 
 	return &service{subscriberService, rateService}
 }
 
-// SendEmailToAll sends emails to all users in the database with the current exchange rate.
 func (s *service) SendEmailToAll(subject string, templatePath string) {
 	users, err := s.subscriberService.GetAll()
 	if err != nil {

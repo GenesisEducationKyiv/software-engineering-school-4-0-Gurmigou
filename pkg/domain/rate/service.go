@@ -64,7 +64,6 @@ func (s *service) SaveRate(currencyFrom string, currencyTo string, exchangeRate 
 		return
 	}
 
-	// Add new rate record
 	rate := model.Rate{CurrencyFrom: currencyFrom, CurrencyTo: currencyTo, Rate: exchangeRate}
 	if err := s.repository.Create(&rate).Error; err != nil {
 		log.Printf("Error writing exchange rate to database: %v", err)

@@ -23,7 +23,6 @@ func NewService(mailService mail.Service) Service {
 func (s *service) StartScheduler() {
 	scheduler := gocron.NewScheduler(time.Local)
 
-	// Schedule the email job
 	_, err := scheduler.Every(1).Day().At(
 		constants.EMAIL_SEND_TIME).Do(func() {
 		s.mailService.SendEmailToAll(
@@ -33,6 +32,5 @@ func (s *service) StartScheduler() {
 		log.Fatalf("Error scheduling email notifications: %v", err)
 	}
 
-	// Start the scheduler
 	scheduler.StartAsync()
 }

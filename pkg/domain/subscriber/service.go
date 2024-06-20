@@ -27,7 +27,6 @@ func (s *service) GetAll() ([]model.User, error) {
 }
 
 func (s *service) Add(email string) error {
-	// Check if email already exists
 	exists, err := s.checkIfUserExists(email)
 	if err != nil {
 		return err
@@ -36,7 +35,6 @@ func (s *service) Add(email string) error {
 		return app_errors.ErrEmailAlreadyExists
 	}
 
-	// Add new email for subscription
 	if err := s.addUserEmail(email); err != nil {
 		return err
 	}

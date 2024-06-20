@@ -20,13 +20,11 @@ func NewController(router *gin.Engine, subscriberService Service) *Controller {
 func (c *Controller) AddUserEmail(context *gin.Context) {
 	var input EmailDto
 
-	// Bind input
 	if err := context.ShouldBind(&input); err != nil {
 		context.JSON(http.StatusBadRequest, gin.H{"app-error": "Email request body is not correct."})
 		return
 	}
 
-	// Handle email subscription in service layer
 	if err := c.subscriberService.Add(input.Email); err != nil {
 		if errors.Is(err, app_errors.ErrEmailAlreadyExists) {
 			context.JSON(http.StatusConflict, gin.H{"app-error": "Email already exists"})
@@ -36,6 +34,5 @@ func (c *Controller) AddUserEmail(context *gin.Context) {
 		return
 	}
 
-	// Email successfully added
 	context.JSON(http.StatusOK, gin.H{"message": "Email added successfully"})
 }
