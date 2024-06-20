@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"log"
 	"net/smtp"
+	cron_jobs "se-school-case/pkg/domain/cron-jobs"
 	"se-school-case/pkg/domain/rate"
 	"se-school-case/pkg/domain/subscriber"
 	"se-school-case/pkg/util"
@@ -13,7 +14,7 @@ import (
 )
 
 type Service interface {
-	SendEmailToAll(subject string, templatePath string)
+	cron_jobs.MailService
 	SendEmail(subject string, templatePath string, sendTo string, rate float64) error
 }
 

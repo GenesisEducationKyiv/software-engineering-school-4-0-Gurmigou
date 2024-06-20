@@ -3,15 +3,14 @@ package cron_jobs
 import (
 	"github.com/gin-gonic/gin"
 	"net/http"
-	"se-school-case/pkg/domain/mail"
 	"se-school-case/pkg/util/constants"
 )
 
 type Controller struct {
-	mailService mail.Service
+	mailService MailService
 }
 
-func NewController(router *gin.Engine, mailService mail.Service) *Controller {
+func NewController(router *gin.Engine, mailService MailService) *Controller {
 	ctrl := &Controller{mailService: mailService}
 	router.POST("/api/notify", ctrl.PostExplicitlyNotify)
 	return ctrl

@@ -3,7 +3,6 @@ package cron_jobs
 import (
 	"github.com/go-co-op/gocron"
 	"log"
-	"se-school-case/pkg/domain/mail"
 	"se-school-case/pkg/util/constants"
 	"time"
 )
@@ -13,10 +12,10 @@ type Service interface {
 }
 
 type service struct {
-	mailService mail.Service
+	mailService MailService
 }
 
-func NewService(mailService mail.Service) Service {
+func NewService(mailService MailService) Service {
 	return &service{mailService}
 }
 
