@@ -4,14 +4,17 @@ services:
   db:
     image: postgres:latest
     container_name: postgres
-    environment:
-      POSTGRES_USER: root
-      POSTGRES_PASSWORD: root
-      POSTGRES_DB: case
     ports:
       - "5432:5432"
+    env_file:
+      - .env
     volumes:
       - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
   app:
     build:
@@ -21,16 +24,9 @@ services:
     ports:
       - "3000:3000"
     depends_on:
-      - db
-    environment:
-      PORT: 3000
-      DB_URL: "host=db user=root password=root dbname=case port=5432 sslmode=disable"
-      DB_FULL_URL: "postgres://root:root@db:5432/case?sslmode=disable"
-      RATE_API_URL: "https://api.privatbank.ua/p24api/pubinfo?json&exchange&coursid=5"
-      GOOGLE_USERNAME: "se.school.case.2024.notification@gmail.com"
-      GOOGLE_PASSWORD: "tyctaulbmtblferm"
-      TEMPLATE_PATH: "./resource/email.html"
-      EMAIL_SEND_TIME: "17:43"
-
+      db:
+        condition: service_healthy
+    env_file:
+      - .env
 volumes:
   postgres_data:

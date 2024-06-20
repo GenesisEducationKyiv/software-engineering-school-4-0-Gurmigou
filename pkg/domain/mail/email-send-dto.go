@@ -1,4 +1,4 @@
-package dto
+package mail
 
 type EmailSendDto struct {
 	Email       string
