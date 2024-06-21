@@ -17,13 +17,13 @@ type api struct {
 }
 
 func NewApi() Api {
-	router := gin.Default()
+	engine := gin.Default()
 	deps := wireDependencies()
 	deps.cronService.StartScheduler()
-	rate.NewController(router, deps.rateService)
-	subscriber.NewController(router, deps.subscriberService)
-	cronjobs.NewController(router, deps.mailService)
-	return &api{router}
+	rate.NewHandler(deps.rateService).Register(engine)
+	subscriber.NewHandler(deps.subscriberService).Register(engine)
+	cronjobs.NewHandler(deps.mailService).Register(engine)
+	return &api{engine}
 }
 
 func (a *api) HandleRequests() {

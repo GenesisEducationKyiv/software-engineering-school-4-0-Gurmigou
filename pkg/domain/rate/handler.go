@@ -3,6 +3,7 @@ package rate
 import (
 	"github.com/gin-gonic/gin"
 	"net/http"
+	"se-school-case/pkg/domain"
 	"se-school-case/pkg/model"
 )
 
@@ -19,18 +20,19 @@ type Handler struct {
 	rateService RateInterface
 }
 
-func NewHandler(router *gin.Engine, rateService RateInterface) *Handler {
-	ctrl := &Handler{rateService}
-	router.GET("/api/rate", ctrl.GetExchangeRate)
-	return ctrl
+func NewHandler(rateService RateInterface) domain.Registrable {
+	return &Handler{rateService}
 }
 
-func (c *Handler) GetExchangeRate(context *gin.Context) {
-	rateResp, err := c.rateService.GetRate()
+func (h *Handler) Register(engine *gin.Engine) {
+	engine.GET("/api/rate", h.GetExchangeRate)
+}
+
+func (h *Handler) GetExchangeRate(context *gin.Context) {
+	rateResp, err := h.rateService.GetRate()
 	if err != nil {
 		context.JSON(http.StatusInternalServerError, gin.H{"app-error": "Failed to get the latest rate"})
 		return
 	}
-
 	context.String(http.StatusOK, "%f", rateResp.Rate)
 }

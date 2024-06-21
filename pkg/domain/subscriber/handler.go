@@ -4,6 +4,7 @@ import (
 	"errors"
 	"github.com/gin-gonic/gin"
 	"net/http"
+	"se-school-case/pkg/domain"
 	"se-school-case/pkg/model"
 	"se-school-case/pkg/util/app-error"
 )
@@ -17,13 +18,15 @@ type Handler struct {
 	subscriberService SubscriberInterface
 }
 
-func NewHandler(router *gin.Engine, subscriberService SubscriberInterface) *Handler {
-	ctrl := &Handler{subscriberService}
-	router.POST("/api/subscribe", ctrl.AddUserEmail)
-	return ctrl
+func NewHandler(subscriberService SubscriberInterface) domain.Registrable {
+	return &Handler{subscriberService}
 }
 
-func (c *Handler) AddUserEmail(context *gin.Context) {
+func (h *Handler) Register(engine *gin.Engine) {
+	engine.POST("/api/subscribe", h.AddUserEmail)
+}
+
+func (h *Handler) AddUserEmail(context *gin.Context) {
 	var input EmailDto
 
 	if err := context.ShouldBind(&input); err != nil {
@@ -31,7 +34,7 @@ func (c *Handler) AddUserEmail(context *gin.Context) {
 		return
 	}
 
-	if err := c.subscriberService.Add(input.Email); err != nil {
+	if err := h.subscriberService.Add(input.Email); err != nil {
 		if errors.Is(err, app_errors.ErrEmailAlreadyExists) {
 			context.JSON(http.StatusConflict, gin.H{"app-error": "Email already exists"})
 		} else {
