@@ -28,6 +28,13 @@ func (h *Handler) Register(engine *gin.Engine) {
 	engine.GET("/api/rate", h.GetExchangeRate)
 }
 
+// swagger:route GET /api/rate Rate getExchangeRate
+// Get the latest exchange rate
+//
+// responses:
+//
+//	200: body:string The latest exchange rate
+//	500: body:gin.H{"app-error": "Failed to get the latest rate"}
 func (h *Handler) GetExchangeRate(context *gin.Context) {
 	rateResp, err := h.rateService.GetRate()
 	if err != nil {

@@ -26,6 +26,17 @@ func (h *Handler) Register(engine *gin.Engine) {
 	engine.POST("/api/subscribe", h.AddUserEmail)
 }
 
+// swagger:route POST /api/subscribe Subscriber addUserEmail
+// Add a new subscriber email
+//
+// Adds a new email to the list of subscribers.
+//
+// responses:
+//
+//	200: body:gin.H{"message": "Email added successfully"}
+//	400: body:gin.H{"app-error": "Email request body is not correct."}
+//	409: body:gin.H{"app-error": "Email already exists"}
+//	500: body:gin.H{"app-error": "Failed to add email"}
 func (h *Handler) AddUserEmail(context *gin.Context) {
 	var input EmailDto
 
