@@ -11,25 +11,25 @@ import (
 )
 
 type dependencies struct {
-	subscriberService subscriber.Service
-	rateService       rate.Service
-	mailService       mail.Service
-	cronService       cron_jobs.Service
+	subscriberService subscriber.SubscriberInterface
+	rateService       rate.RateInterface
+	mailService       mail.MailInterface
+	cronService       cron_jobs.CronJobsInterface
 }
 
 func wireDependencies() *dependencies {
 	initEnv()
 	db := connectToDb()
 	fetchService := rate.NewRateFetchService()
-	rateService := rate.NewService(db, fetchService)
+	rateService := rate.NewService(db, &fetchService)
 	subscriberService := subscriber.NewService(db)
-	mailService := mail.NewService(subscriberService, rateService)
-	cronService := cron_jobs.NewService(mailService)
+	mailService := mail.NewService(&subscriberService, &rateService)
+	cronService := cron_jobs.NewService(&mailService)
 	return &dependencies{
-		subscriberService: subscriberService,
-		rateService:       rateService,
-		mailService:       mailService,
-		cronService:       cronService,
+		subscriberService: &subscriberService,
+		rateService:       &rateService,
+		mailService:       &mailService,
+		cronService:       &cronService,
 	}
 }
 

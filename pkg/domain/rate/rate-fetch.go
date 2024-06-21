@@ -11,17 +11,17 @@ import (
 	"se-school-case/pkg/util/constants"
 )
 
-type FetchService interface {
+type RateFetchInterface interface {
 	FetchExchangeRate() (float64, error)
 }
 
-type fetchService struct{}
+type FetchService struct{}
 
 func NewRateFetchService() FetchService {
-	return &fetchService{}
+	return FetchService{}
 }
 
-func (s *fetchService) FetchExchangeRate() (float64, error) {
+func (s *FetchService) FetchExchangeRate() (float64, error) {
 	resp, err := http.Get(constants.RATE_API_URL)
 	if err != nil {
 		return 0, fmt.Errorf("error fetching exchange rate: %w", err)

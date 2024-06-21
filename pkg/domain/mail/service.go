@@ -13,21 +13,25 @@ import (
 	"text/template"
 )
 
-type Service interface {
-	cron_jobs.MailService
+type MailInterface interface {
+	cron_jobs.MailInterface
 	SendEmail(subject string, templatePath string, sendTo string, rate float64) error
 }
 
-type service struct {
-	subscriberService subscriber.Service
-	rateService       rate.Service
+type MailService struct {
+	subscriberService subscriber.SubscriberInterface
+	rateService       rate.RateInterface
 }
 
-func NewService(subscriberService subscriber.Service, rateService rate.Service) Service {
-	return &service{subscriberService, rateService}
+func NewService(subscriberService subscriber.SubscriberInterface,
+	rateService rate.RateInterface) MailService {
+	return MailService{
+		subscriberService: subscriberService,
+		rateService:       rateService,
+	}
 }
 
-func (s *service) SendEmailToAll(subject string, templatePath string) {
+func (s *MailService) SendEmailToAll(subject string, templatePath string) {
 	users, err := s.subscriberService.GetAll()
 	if err != nil {
 		log.Fatalf("Failed to get users: %v", err)
@@ -48,7 +52,7 @@ func (s *service) SendEmailToAll(subject string, templatePath string) {
 	}
 }
 
-func (s *service) SendEmail(subject string, templatePath string, sendTo string, rate float64) error {
+func (s *MailService) SendEmail(subject string, templatePath string, sendTo string, rate float64) error {
 	var body bytes.Buffer
 	t, err := template.ParseFiles(templatePath)
 	if err != nil {

@@ -6,10 +6,10 @@ import (
 )
 
 type Controller struct {
-	rateService Service
+	rateService RateInterface
 }
 
-func NewController(router *gin.Engine, rateService Service) *Controller {
+func NewController(router *gin.Engine, rateService RateInterface) *Controller {
 	ctrl := &Controller{rateService}
 	router.GET("/api/rate", ctrl.GetExchangeRate)
 	return ctrl

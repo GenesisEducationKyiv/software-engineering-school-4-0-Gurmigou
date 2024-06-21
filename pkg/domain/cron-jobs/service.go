@@ -7,19 +7,19 @@ import (
 	"time"
 )
 
-type Service interface {
+type CronJobsInterface interface {
 	StartScheduler()
 }
 
-type service struct {
-	mailService MailService
+type CronJobsService struct {
+	mailService MailInterface
 }
 
-func NewService(mailService MailService) Service {
-	return &service{mailService}
+func NewService(mailService MailInterface) CronJobsService {
+	return CronJobsService{mailService}
 }
 
-func (s *service) StartScheduler() {
+func (s *CronJobsService) StartScheduler() {
 	scheduler := gocron.NewScheduler(time.Local)
 
 	_, err := scheduler.Every(1).Day().At(

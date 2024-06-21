@@ -9,23 +9,23 @@ import (
 	"time"
 )
 
-type Service interface {
+type RateInterface interface {
 	GetRate() (model.Rate, error)
 	SaveRate(currencyFrom string, currencyTo string, exchangeRate float64)
 }
 
-type service struct {
+type RateService struct {
 	repository   *gorm.DB
-	fetchService FetchService
+	fetchService RateFetchInterface
 }
 
-func NewService(repository *gorm.DB, fetchService FetchService) Service {
-	return &service{repository: repository, fetchService: fetchService}
+func NewService(repository *gorm.DB, rateFetch RateFetchInterface) RateService {
+	return RateService{repository: repository, fetchService: rateFetch}
 }
 
 var ErrNoRateFound = errors.New("no rate found")
 
-func (s *service) GetRate() (model.Rate, error) {
+func (s *RateService) GetRate() (model.Rate, error) {
 	rate, err := s.getLatestRate()
 	if err != nil {
 		if errors.Is(err, ErrNoRateFound) || err.Error() == "record not found" {
@@ -60,7 +60,7 @@ func (s *service) GetRate() (model.Rate, error) {
 	return rate, nil
 }
 
-func (s *service) SaveRate(currencyFrom string, currencyTo string, exchangeRate float64) {
+func (s *RateService) SaveRate(currencyFrom string, currencyTo string, exchangeRate float64) {
 	// Delete existing rate records where CurrencyFrom and CurrencyTo match
 	if err := s.repository.Where("currency_from = ? AND currency_to = ?",
 		currencyFrom, currencyTo).Delete(&model.Rate{}).Error; err != nil {
@@ -75,7 +75,7 @@ func (s *service) SaveRate(currencyFrom string, currencyTo string, exchangeRate 
 	}
 }
 
-func (s *service) getLatestRate() (model.Rate, error) {
+func (s *RateService) getLatestRate() (model.Rate, error) {
 	var rate model.Rate
 	err := s.repository.Where("currency_from = ? AND currency_to = ?",
 		constants.DefaultCurrentFrom, constants.DefaultCurrentTo).First(&rate).Error

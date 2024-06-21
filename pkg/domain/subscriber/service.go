@@ -7,26 +7,26 @@ import (
 	app_errors "se-school-case/pkg/util/app-error"
 )
 
-type Service interface {
+type SubscriberInterface interface {
 	Add(email string) error
 	GetAll() ([]model.User, error)
 }
 
-type service struct {
+type SubscriberService struct {
 	repository *gorm.DB
 }
 
-func NewService(repository *gorm.DB) Service {
-	return &service{repository}
+func NewService(repository *gorm.DB) SubscriberService {
+	return SubscriberService{repository}
 }
 
-func (s *service) GetAll() ([]model.User, error) {
+func (s *SubscriberService) GetAll() ([]model.User, error) {
 	var users []model.User
 	err := s.repository.Find(&users).Error
 	return users, err
 }
 
-func (s *service) Add(email string) error {
+func (s *SubscriberService) Add(email string) error {
 	exists, err := s.checkIfUserExists(email)
 	if err != nil {
 		return err
@@ -42,7 +42,7 @@ func (s *service) Add(email string) error {
 	return nil
 }
 
-func (s *service) checkIfUserExists(email string) (bool, error) {
+func (s *SubscriberService) checkIfUserExists(email string) (bool, error) {
 	var user model.User
 	if err := s.repository.Where("email = ?", email).First(&user).Error; err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
@@ -53,7 +53,7 @@ func (s *service) checkIfUserExists(email string) (bool, error) {
 	return true, nil
 }
 
-func (s *service) addUserEmail(email string) error {
+func (s *SubscriberService) addUserEmail(email string) error {
 	user := model.User{Email: email}
 	if err := s.repository.Create(&user).Error; err != nil {
 		return err

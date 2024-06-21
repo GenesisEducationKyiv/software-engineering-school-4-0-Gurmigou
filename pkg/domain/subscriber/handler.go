@@ -8,10 +8,10 @@ import (
 )
 
 type Controller struct {
-	subscriberService Service
+	subscriberService SubscriberInterface
 }
 
-func NewController(router *gin.Engine, subscriberService Service) *Controller {
+func NewController(router *gin.Engine, subscriberService SubscriberInterface) *Controller {
 	ctrl := &Controller{subscriberService}
 	router.POST("/api/subscribe", ctrl.AddUserEmail)
 	return ctrl
