@@ -1,4 +1,4 @@
-package mail
+package mails
 
 import (
 	"bytes"
@@ -6,8 +6,8 @@ import (
 	"log"
 	"net/smtp"
 	cron_jobs "se-school-case/pkg/domain/cron-jobs"
-	"se-school-case/pkg/domain/rate"
-	"se-school-case/pkg/domain/subscriber"
+	"se-school-case/pkg/domain/rates"
+	"se-school-case/pkg/domain/subscribers"
 	"se-school-case/pkg/util"
 	"se-school-case/pkg/util/constants"
 	"text/template"
@@ -19,12 +19,12 @@ type MailInterface interface {
 }
 
 type MailService struct {
-	subscriberService subscriber.SubscriberInterface
-	rateService       rate.RateInterface
+	subscriberService subscribers.SubscriberInterface
+	rateService       rates.RateInterface
 }
 
-func NewService(subscriberService subscriber.SubscriberInterface,
-	rateService rate.RateInterface) MailService {
+func NewService(subscriberService subscribers.SubscriberInterface,
+	rateService rates.RateInterface) MailService {
 	return MailService{
 		subscriberService: subscriberService,
 		rateService:       rateService,
@@ -40,7 +40,7 @@ func (s *MailService) SendEmailToAll(subject string, templatePath string) {
 
 	rateResp, err := s.rateService.GetRate()
 	if err != nil {
-		log.Fatalf("Failed to get latest rate: %v", err)
+		log.Fatalf("Failed to get latest rates: %v", err)
 		return
 	}
 

@@ -1,4 +1,4 @@
-package subscriber
+package subscribers
 
 import (
 	"errors"
@@ -27,7 +27,7 @@ func (h *Handler) Register(engine *gin.Engine) {
 }
 
 // swagger:route POST /api/subscribe Subscriber addUserEmail
-// Add a new subscriber email
+// Add a new subscribers email
 //
 // Adds a new email to the list of subscribers.
 //

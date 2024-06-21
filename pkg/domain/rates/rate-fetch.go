@@ -1,4 +1,4 @@
-package rate
+package rates
 
 import (
 	"encoding/json"
@@ -20,7 +20,7 @@ func NewRateFetchService() FetchService {
 func (s *FetchService) FetchExchangeRate() (float64, error) {
 	resp, err := http.Get(constants.RATE_API_URL)
 	if err != nil {
-		return 0, fmt.Errorf("error fetching exchange rate: %w", err)
+		return 0, fmt.Errorf("error fetching exchange rates: %w", err)
 	}
 	defer func(Body io.ReadCloser) {
 		err := Body.Close()
@@ -47,5 +47,5 @@ func (s *FetchService) FetchExchangeRate() (float64, error) {
 		}
 	}
 
-	return 0, errors.New("rate not found")
+	return 0, errors.New("rates not found")
 }

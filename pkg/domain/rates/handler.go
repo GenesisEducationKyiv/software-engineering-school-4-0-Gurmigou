@@ -1,4 +1,4 @@
-package rate
+package rates
 
 import (
 	"github.com/gin-gonic/gin"
@@ -25,20 +25,20 @@ func NewHandler(rateService RateInterface) domain.Registrable {
 }
 
 func (h *Handler) Register(engine *gin.Engine) {
-	engine.GET("/api/rate", h.GetExchangeRate)
+	engine.GET("/api/rates", h.GetExchangeRate)
 }
 
-// swagger:route GET /api/rate Rate getExchangeRate
-// Get the latest exchange rate
+// swagger:route GET /api/rates Rate getExchangeRate
+// Get the latest exchange rates
 //
 // responses:
 //
-//	200: body:string The latest exchange rate
-//	500: body:gin.H{"app-error": "Failed to get the latest rate"}
+//	200: body:string The latest exchange rates
+//	500: body:gin.H{"app-error": "Failed to get the latest rates"}
 func (h *Handler) GetExchangeRate(context *gin.Context) {
 	rateResp, err := h.rateService.GetRate()
 	if err != nil {
-		context.JSON(http.StatusInternalServerError, gin.H{"app-error": "Failed to get the latest rate"})
+		context.JSON(http.StatusInternalServerError, gin.H{"app-error": "Failed to get the latest rates"})
 		return
 	}
 	context.String(http.StatusOK, "%f", rateResp.Rate)
