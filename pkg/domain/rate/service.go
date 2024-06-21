@@ -9,11 +9,6 @@ import (
 	"time"
 )
 
-type RateInterface interface {
-	GetRate() (model.Rate, error)
-	SaveRate(currencyFrom string, currencyTo string, exchangeRate float64)
-}
-
 type RateService struct {
 	repository   *gorm.DB
 	fetchService RateFetchInterface

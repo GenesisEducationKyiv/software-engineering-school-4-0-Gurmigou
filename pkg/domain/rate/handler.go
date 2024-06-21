@@ -3,19 +3,29 @@ package rate
 import (
 	"github.com/gin-gonic/gin"
 	"net/http"
+	"se-school-case/pkg/model"
 )
 
-type Controller struct {
+type RateInterface interface {
+	GetRate() (model.Rate, error)
+	SaveRate(currencyFrom string, currencyTo string, exchangeRate float64)
+}
+
+type RateFetchInterface interface {
+	FetchExchangeRate() (float64, error)
+}
+
+type Handler struct {
 	rateService RateInterface
 }
 
-func NewController(router *gin.Engine, rateService RateInterface) *Controller {
-	ctrl := &Controller{rateService}
+func NewHandler(router *gin.Engine, rateService RateInterface) *Handler {
+	ctrl := &Handler{rateService}
 	router.GET("/api/rate", ctrl.GetExchangeRate)
 	return ctrl
 }
 
-func (c *Controller) GetExchangeRate(context *gin.Context) {
+func (c *Handler) GetExchangeRate(context *gin.Context) {
 	rateResp, err := c.rateService.GetRate()
 	if err != nil {
 		context.JSON(http.StatusInternalServerError, gin.H{"app-error": "Failed to get the latest rate"})

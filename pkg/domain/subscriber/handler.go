@@ -4,20 +4,26 @@ import (
 	"errors"
 	"github.com/gin-gonic/gin"
 	"net/http"
+	"se-school-case/pkg/model"
 	"se-school-case/pkg/util/app-error"
 )
 
-type Controller struct {
+type SubscriberInterface interface {
+	Add(email string) error
+	GetAll() ([]model.User, error)
+}
+
+type Handler struct {
 	subscriberService SubscriberInterface
 }
 
-func NewController(router *gin.Engine, subscriberService SubscriberInterface) *Controller {
-	ctrl := &Controller{subscriberService}
+func NewHandler(router *gin.Engine, subscriberService SubscriberInterface) *Handler {
+	ctrl := &Handler{subscriberService}
 	router.POST("/api/subscribe", ctrl.AddUserEmail)
 	return ctrl
 }
 
-func (c *Controller) AddUserEmail(context *gin.Context) {
+func (c *Handler) AddUserEmail(context *gin.Context) {
 	var input EmailDto
 
 	if err := context.ShouldBind(&input); err != nil {

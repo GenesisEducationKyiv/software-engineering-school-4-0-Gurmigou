@@ -11,10 +11,6 @@ import (
 	"se-school-case/pkg/util/constants"
 )
 
-type RateFetchInterface interface {
-	FetchExchangeRate() (float64, error)
-}
-
 type FetchService struct{}
 
 func NewRateFetchService() FetchService {

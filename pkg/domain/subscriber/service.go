@@ -7,11 +7,6 @@ import (
 	app_errors "se-school-case/pkg/util/app-error"
 )
 
-type SubscriberInterface interface {
-	Add(email string) error
-	GetAll() ([]model.User, error)
-}
-
 type SubscriberService struct {
 	repository *gorm.DB
 }

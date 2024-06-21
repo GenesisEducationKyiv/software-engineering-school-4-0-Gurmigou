@@ -7,10 +7,6 @@ import (
 	"time"
 )
 
-type CronJobsInterface interface {
-	StartScheduler()
-}
-
 type CronJobsService struct {
 	mailService MailInterface
 }
