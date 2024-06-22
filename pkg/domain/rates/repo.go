@@ -13,7 +13,7 @@ type GormRateRepository struct {
 	db *gorm.DB
 }
 
-func NewGormRateRepository(db *gorm.DB) *GormRateRepository {
+func NewRateRepository(db *gorm.DB) *GormRateRepository {
 	return &GormRateRepository{db: db}
 }
 

@@ -20,8 +20,9 @@ type dependencies struct {
 func wireDependencies() *dependencies {
 	initEnv()
 	db := connectToDb()
+	rateRepo := rates.NewRateRepository(db)
 	fetchService := rates.NewRateFetchService()
-	rateService := rates.NewService(db, &fetchService)
+	rateService := rates.NewService(rateRepo, &fetchService)
 	subscriberService := subscribers.NewService(db)
 	mailService := mails.NewService(&subscriberService, &rateService)
 	cronService := cron_jobs.NewService(&mailService)
