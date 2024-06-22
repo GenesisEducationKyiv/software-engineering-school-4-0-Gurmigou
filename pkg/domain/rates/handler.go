@@ -1,9 +1,10 @@
 package rates
 
+//go:generate mockgen -source=handler.go -destination=mock.go
+
 import (
 	"github.com/gin-gonic/gin"
 	"net/http"
-	"se-school-case/pkg/domain"
 	"se-school-case/pkg/model"
 )
 
@@ -20,7 +21,7 @@ type Handler struct {
 	rateService RateInterface
 }
 
-func NewHandler(rateService RateInterface) domain.Registrable {
+func NewHandler(rateService RateInterface) *Handler {
 	return &Handler{rateService}
 }
 

@@ -2,7 +2,6 @@ package rates
 
 import (
 	"errors"
-	"gorm.io/gorm"
 	"log"
 	"se-school-case/pkg/model"
 	"se-school-case/pkg/util/constants"
@@ -10,11 +9,11 @@ import (
 )
 
 type RateService struct {
-	repository   *gorm.DB
+	repository   RateRepository
 	fetchService RateFetchInterface
 }
 
-func NewService(repository *gorm.DB, rateFetch RateFetchInterface) RateService {
+func NewService(repository RateRepository, rateFetch RateFetchInterface) RateService {
 	return RateService{repository: repository, fetchService: rateFetch}
 }
 
@@ -58,13 +57,13 @@ func (s *RateService) GetRate() (model.Rate, error) {
 func (s *RateService) SaveRate(currencyFrom string, currencyTo string, exchangeRate float64) {
 	// Delete existing rates records where CurrencyFrom and CurrencyTo match
 	if err := s.repository.Where("currency_from = ? AND currency_to = ?",
-		currencyFrom, currencyTo).Delete(&model.Rate{}).Error; err != nil {
+		currencyFrom, currencyTo).Delete(&model.Rate{}); err != nil {
 		log.Printf("Error deleting old exchange rates: %v", err)
 		return
 	}
 
 	rate := model.Rate{CurrencyFrom: currencyFrom, CurrencyTo: currencyTo, Rate: exchangeRate}
-	if err := s.repository.Create(&rate).Error; err != nil {
+	if err := s.repository.Create(&rate); err != nil {
 		log.Printf("Error writing exchange rates to database: %v", err)
 		return
 	}
@@ -73,7 +72,7 @@ func (s *RateService) SaveRate(currencyFrom string, currencyTo string, exchangeR
 func (s *RateService) getLatestRate() (model.Rate, error) {
 	var rate model.Rate
 	err := s.repository.Where("currency_from = ? AND currency_to = ?",
-		constants.DefaultCurrentFrom, constants.DefaultCurrentTo).First(&rate).Error
+		constants.DefaultCurrentFrom, constants.DefaultCurrentTo).First(&rate)
 	if err != nil {
 		return model.Rate{}, err
 	}
