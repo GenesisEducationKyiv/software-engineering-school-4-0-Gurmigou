@@ -1,5 +1,7 @@
 package subscribers
 
+//go:generate mockgen -source=handler.go -destination=mock.go
+
 import (
 	"errors"
 	"github.com/gin-gonic/gin"
