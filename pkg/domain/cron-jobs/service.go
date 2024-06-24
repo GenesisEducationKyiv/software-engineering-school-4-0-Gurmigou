@@ -20,8 +20,11 @@ func (s *CronJobsService) StartScheduler() {
 
 	_, err := scheduler.Every(1).Day().At(
 		constants.EMAIL_SEND_TIME).Do(func() {
-		s.mailService.SendEmailToAll(
+		err := s.mailService.SendEmailToAll(
 			"Exchange rates notification", constants.TEMPLATE_PATH)
+		if err != nil {
+			return
+		}
 	})
 	if err != nil {
 		log.Fatalf("Error scheduling email notifications: %v", err)
