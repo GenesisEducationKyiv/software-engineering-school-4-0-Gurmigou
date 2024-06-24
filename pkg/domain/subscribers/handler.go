@@ -19,8 +19,8 @@ type Handler struct {
 	subscriberService SubscriberInterface
 }
 
-func NewHandler(subscriberService SubscriberInterface) Handler {
-	return Handler{subscriberService}
+func NewHandler(subscriberService SubscriberInterface) *Handler {
+	return &Handler{subscriberService}
 }
 
 func (h *Handler) Register(engine *gin.Engine) {
