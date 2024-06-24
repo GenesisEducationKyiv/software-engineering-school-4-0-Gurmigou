@@ -21,8 +21,8 @@ type sendEmailToAllTestCase struct {
 }
 
 func TestMailService_SendEmailToAll(t *testing.T) {
-	constants.GOOGLE_USERNAME = "egor555x6@gmail.com"
-	constants.GOOGLE_PASSWORD = "haezjvcfeziujxka"
+	constants.GOOGLE_USERNAME = "se.school.case.2024.notification@gmail.com"
+	constants.GOOGLE_PASSWORD = "password"
 
 	tests := []sendEmailToAllTestCase{
 		{
