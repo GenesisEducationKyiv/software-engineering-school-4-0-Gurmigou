@@ -6,7 +6,6 @@ import (
 	"errors"
 	"github.com/gin-gonic/gin"
 	"net/http"
-	"se-school-case/pkg/domain"
 	"se-school-case/pkg/model"
 	"se-school-case/pkg/util/app-error"
 )
@@ -20,8 +19,8 @@ type Handler struct {
 	subscriberService SubscriberInterface
 }
 
-func NewHandler(subscriberService SubscriberInterface) domain.Registrable {
-	return &Handler{subscriberService}
+func NewHandler(subscriberService SubscriberInterface) Handler {
+	return Handler{subscriberService}
 }
 
 func (h *Handler) Register(engine *gin.Engine) {
