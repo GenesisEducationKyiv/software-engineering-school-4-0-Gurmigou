@@ -1,6 +1,9 @@
 package rates
 
-import "gorm.io/gorm"
+import (
+	"errors"
+	"gorm.io/gorm"
+)
 
 type RateRepository interface {
 	Where(query interface{}, args ...interface{}) RateRepository
@@ -31,5 +34,9 @@ func (r *GormRateRepository) Create(value interface{}) error {
 }
 
 func (r *GormRateRepository) Delete(value interface{}, conds ...interface{}) error {
-	return r.db.Delete(value, conds...).Error
+	result := r.db.Delete(value, conds...)
+	if result.Error != nil && !errors.Is(result.Error, gorm.ErrRecordNotFound) {
+		return result.Error
+	}
+	return nil
 }

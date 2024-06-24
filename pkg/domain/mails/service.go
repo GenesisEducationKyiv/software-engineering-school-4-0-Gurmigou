@@ -23,40 +23,39 @@ type MailService struct {
 	rateService       rates.RateInterface
 }
 
-func NewService(subscriberService subscribers.SubscriberInterface,
-	rateService rates.RateInterface) MailService {
+func NewService(subscriberService subscribers.SubscriberInterface, rateService rates.RateInterface) MailService {
 	return MailService{
 		subscriberService: subscriberService,
 		rateService:       rateService,
 	}
 }
 
-func (s *MailService) SendEmailToAll(subject string, templatePath string) {
+func (s *MailService) SendEmailToAll(subject string, templatePath string) error {
 	users, err := s.subscriberService.GetAll()
 	if err != nil {
-		log.Fatalf("Failed to get users: %v", err)
-		return
+		return fmt.Errorf("failed to get users: %w", err)
 	}
 
 	rateResp, err := s.rateService.GetRate()
 	if err != nil {
-		log.Fatalf("Failed to get latest rates: %v", err)
-		return
+		return fmt.Errorf("failed to get latest rates: %w", err)
 	}
 
 	for _, userResp := range users {
 		err := s.SendEmail(subject, templatePath, userResp.Email, rateResp.Rate)
 		if err != nil {
 			log.Printf("Failed to send email to %s: %v", userResp.Email, err)
+			return fmt.Errorf("failed to send email to %s: %v", userResp.Email, err)
 		}
 	}
+	return nil
 }
 
 func (s *MailService) SendEmail(subject string, templatePath string, sendTo string, rate float64) error {
 	var body bytes.Buffer
 	t, err := template.ParseFiles(templatePath)
 	if err != nil {
-		return err
+		return fmt.Errorf("failed to parse template: %w", err)
 	}
 
 	err = t.Execute(&body, EmailSendDto{
@@ -65,7 +64,7 @@ func (s *MailService) SendEmail(subject string, templatePath string, sendTo stri
 		Rate:        fmt.Sprintf("%.2f", rate),
 	})
 	if err != nil {
-		return err
+		return fmt.Errorf("failed to execute template: %w", err)
 	}
 
 	auth := smtp.PlainAuth(
@@ -86,5 +85,8 @@ func (s *MailService) SendEmail(subject string, templatePath string, sendTo stri
 		[]string{sendTo},
 		[]byte(msg),
 	)
-	return err
+	if err != nil {
+		return fmt.Errorf("failed to send email: %w", err)
+	}
+	return nil
 }

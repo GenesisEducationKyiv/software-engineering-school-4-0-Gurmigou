@@ -20,7 +20,7 @@ func NewHandler(mailService MailInterface) domain.Registrable {
 }
 
 func (h *CronJobsHandler) Register(engine *gin.Engine) {
-	engine.POST("/api/notify", h.PostExplicitlyNotify)
+	engine.POST("/api/notify", h.ExplicitlyNotify)
 }
 
 // swagger:route POST /api/notify CronJobs postExplicitlyNotify
@@ -31,7 +31,11 @@ func (h *CronJobsHandler) Register(engine *gin.Engine) {
 // responses:
 //
 //	200: body:gin.H{"message": "Successfully notified all users."}
-func (h *CronJobsHandler) PostExplicitlyNotify(context *gin.Context) {
-	h.mailService.SendEmailToAll("Exchange rates notification", constants.TEMPLATE_PATH)
-	context.JSON(http.StatusOK, gin.H{"message": "Successfully notified all users."})
+func (h *CronJobsHandler) ExplicitlyNotify(context *gin.Context) {
+	err := h.mailService.SendEmailToAll("Exchange rates notification", constants.TEMPLATE_PATH)
+	if err != nil {
+		context.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to notify users - " + err.Error()})
+	} else {
+		context.JSON(http.StatusOK, gin.H{"message": "Successfully notified all users."})
+	}
 }
