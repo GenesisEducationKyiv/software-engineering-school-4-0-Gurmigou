@@ -3,8 +3,8 @@ package api
 import (
 	"github.com/gin-gonic/gin"
 	cronjobs "se-school-case/pkg/domain/cron-jobs"
-	"se-school-case/pkg/domain/rate"
-	"se-school-case/pkg/domain/subscriber"
+	"se-school-case/pkg/domain/rates"
+	"se-school-case/pkg/domain/subscribers"
 	"se-school-case/pkg/initializer"
 )
 
@@ -17,13 +17,13 @@ type api struct {
 }
 
 func NewApi() Api {
-	router := gin.Default()
+	engine := gin.Default()
 	deps := wireDependencies()
 	deps.cronService.StartScheduler()
-	rate.NewController(router, deps.rateService)
-	subscriber.NewController(router, deps.subscriberService)
-	cronjobs.NewController(router, deps.mailService)
-	return &api{router}
+	rates.NewHandler(deps.rateService).Register(engine)
+	subscribers.NewHandler(deps.subscriberService).Register(engine)
+	cronjobs.NewHandler(deps.mailService).Register(engine)
+	return &api{engine}
 }
 
 func (a *api) HandleRequests() {

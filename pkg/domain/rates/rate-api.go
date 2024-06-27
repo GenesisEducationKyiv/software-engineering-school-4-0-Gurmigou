@@ -1,4 +1,4 @@
-package rate
+package rates
 
 type RateAPIDto struct {
 	CCY     string `json:"ccy"`

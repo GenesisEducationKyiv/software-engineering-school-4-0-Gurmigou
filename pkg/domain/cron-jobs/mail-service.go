@@ -1,5 +1,5 @@
 package cron_jobs
 
-type MailService interface {
-	SendEmailToAll(subject string, templatePath string)
+type MailInterface interface {
+	SendEmailToAll(subject string, templatePath string) error
 }

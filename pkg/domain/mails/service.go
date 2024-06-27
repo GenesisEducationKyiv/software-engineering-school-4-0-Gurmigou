@@ -1,4 +1,4 @@
-package mail
+package mails
 
 import (
 	"bytes"
@@ -6,53 +6,56 @@ import (
 	"log"
 	"net/smtp"
 	cron_jobs "se-school-case/pkg/domain/cron-jobs"
-	"se-school-case/pkg/domain/rate"
-	"se-school-case/pkg/domain/subscriber"
+	"se-school-case/pkg/domain/rates"
+	"se-school-case/pkg/domain/subscribers"
 	"se-school-case/pkg/util"
 	"se-school-case/pkg/util/constants"
 	"text/template"
 )
 
-type Service interface {
-	cron_jobs.MailService
+type MailInterface interface {
+	cron_jobs.MailInterface
 	SendEmail(subject string, templatePath string, sendTo string, rate float64) error
 }
 
-type service struct {
-	subscriberService subscriber.Service
-	rateService       rate.Service
+type MailService struct {
+	subscriberService subscribers.SubscriberInterface
+	rateService       rates.RateInterface
 }
 
-func NewService(subscriberService subscriber.Service, rateService rate.Service) Service {
-	return &service{subscriberService, rateService}
+func NewService(subscriberService subscribers.SubscriberInterface, rateService rates.RateInterface) MailService {
+	return MailService{
+		subscriberService: subscriberService,
+		rateService:       rateService,
+	}
 }
 
-func (s *service) SendEmailToAll(subject string, templatePath string) {
+func (s *MailService) SendEmailToAll(subject string, templatePath string) error {
 	users, err := s.subscriberService.GetAll()
 	if err != nil {
-		log.Fatalf("Failed to get users: %v", err)
-		return
+		return fmt.Errorf("failed to get users: %w", err)
 	}
 
 	rateResp, err := s.rateService.GetRate()
 	if err != nil {
-		log.Fatalf("Failed to get latest rate: %v", err)
-		return
+		return fmt.Errorf("failed to get latest rates: %w", err)
 	}
 
 	for _, userResp := range users {
 		err := s.SendEmail(subject, templatePath, userResp.Email, rateResp.Rate)
 		if err != nil {
 			log.Printf("Failed to send email to %s: %v", userResp.Email, err)
+			return fmt.Errorf("failed to send email to %s: %v", userResp.Email, err)
 		}
 	}
+	return nil
 }
 
-func (s *service) SendEmail(subject string, templatePath string, sendTo string, rate float64) error {
+func (s *MailService) SendEmail(subject string, templatePath string, sendTo string, rate float64) error {
 	var body bytes.Buffer
 	t, err := template.ParseFiles(templatePath)
 	if err != nil {
-		return err
+		return fmt.Errorf("failed to parse template: %w", err)
 	}
 
 	err = t.Execute(&body, EmailSendDto{
@@ -61,7 +64,7 @@ func (s *service) SendEmail(subject string, templatePath string, sendTo string, 
 		Rate:        fmt.Sprintf("%.2f", rate),
 	})
 	if err != nil {
-		return err
+		return fmt.Errorf("failed to execute template: %w", err)
 	}
 
 	auth := smtp.PlainAuth(
@@ -82,5 +85,8 @@ func (s *service) SendEmail(subject string, templatePath string, sendTo string, 
 		[]string{sendTo},
 		[]byte(msg),
 	)
-	return err
+	if err != nil {
+		return fmt.Errorf("failed to send email: %w", err)
+	}
+	return nil
 }
