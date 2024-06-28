@@ -24,6 +24,7 @@ func wireDependencies() *dependencies {
 
 	// Initialize repositories
 	rateRepository := rates.NewRateRepository(db)
+	subscriberRepository := subscribers.NewSubscriberRepository(db)
 
 	// Initialize chain of Rate fetchers
 	bankFetchService := rate.NewBankRateFetchService()
@@ -31,7 +32,7 @@ func wireDependencies() *dependencies {
 	bankFetchService.SetNext(&exchangeFetchService)
 
 	rateService := rates.NewService(&rateRepository, &bankFetchService)
-	subscriberService := subscribers.NewService(db)
+	subscriberService := subscribers.NewService(&subscriberRepository)
 	mailService := mails.NewService(&subscriberService, &rateService)
 	cronService := cron_jobs.NewService(&mailService)
 	return &dependencies{
