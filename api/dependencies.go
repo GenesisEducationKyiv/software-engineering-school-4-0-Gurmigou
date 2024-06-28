@@ -3,6 +3,7 @@ package api
 import (
 	"gorm.io/gorm"
 	cron_jobs "se-school-case/pkg/domain/cron-jobs"
+	"se-school-case/pkg/domain/external-api/rate"
 	"se-school-case/pkg/domain/mails"
 	"se-school-case/pkg/domain/rates"
 	"se-school-case/pkg/domain/subscribers"
@@ -20,8 +21,13 @@ type dependencies struct {
 func wireDependencies() *dependencies {
 	InitEnv()
 	db := connectToDb()
-	fetchService := rates.NewRateFetchService()
-	rateService := rates.NewService(db, &fetchService)
+
+	// Initialize chain of Rate fetchers
+	bankFetchService := rate.NewBankRateFetchService()
+	exchangeFetchService := rate.NewExchangeApiRateFetch()
+	bankFetchService.SetNext(&exchangeFetchService)
+
+	rateService := rates.NewService(db, &bankFetchService)
 	subscriberService := subscribers.NewService(db)
 	mailService := mails.NewService(&subscriberService, &rateService)
 	cronService := cron_jobs.NewService(&mailService)

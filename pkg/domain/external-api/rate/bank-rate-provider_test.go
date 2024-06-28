@@ -1,4 +1,4 @@
-package rates
+package rate
 
 import (
 	"github.com/stretchr/testify/assert"
@@ -59,13 +59,13 @@ func TestFetchExchangeRate(t *testing.T) {
 			if tt.response != "" {
 				server := mockRateAPIServer(tt.response, tt.statusCode)
 				defer server.Close()
-				constants.RATE_API_URL = server.URL
+				constants.RATE_BANK_API_URL = server.URL
 			} else {
-				constants.RATE_API_URL = tt.rateApiUrl
+				constants.RATE_BANK_API_URL = tt.rateApiUrl
 			}
 
-			service := NewRateFetchService()
-			rate, err := service.FetchExchangeRate()
+			service := NewBankRateFetchService()
+			rate, err := service.Fetch()
 
 			if tt.expectedError == "" {
 				assert.NoError(t, err)

@@ -1,7 +1,5 @@
 package rates
 
-//go:generate mockgen -source=handler.go -destination=mock.go
-
 import (
 	"github.com/gin-gonic/gin"
 	"net/http"

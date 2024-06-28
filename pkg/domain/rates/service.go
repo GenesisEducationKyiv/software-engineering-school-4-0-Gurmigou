@@ -4,6 +4,7 @@ import (
 	"errors"
 	"gorm.io/gorm"
 	"log"
+	"se-school-case/pkg/domain/external-api/rate"
 	"se-school-case/pkg/model"
 	"se-school-case/pkg/util/constants"
 	"time"
@@ -11,11 +12,11 @@ import (
 
 type RateService struct {
 	repository   *gorm.DB
-	fetchService RateFetchInterface
+	fetchService rate.CurrencyFetcher
 }
 
-func NewService(repository *gorm.DB, rateFetch RateFetchInterface) RateService {
-	return RateService{repository: repository, fetchService: rateFetch}
+func NewService(repository *gorm.DB, currencyFetcher rate.CurrencyFetcher) RateService {
+	return RateService{repository: repository, fetchService: currencyFetcher}
 }
 
 var ErrNoRateFound = errors.New("no rates found")
@@ -25,7 +26,7 @@ func (s *RateService) GetRate() (model.Rate, error) {
 	if err != nil {
 		if errors.Is(err, ErrNoRateFound) || err.Error() == "record not found" {
 			// Fetch exchange rates if no rates found
-			exchangeRate, fetchErr := s.fetchService.FetchExchangeRate()
+			exchangeRate, fetchErr := s.fetchService.Fetch()
 			if fetchErr != nil {
 				return model.Rate{}, fetchErr
 			}
@@ -41,7 +42,7 @@ func (s *RateService) GetRate() (model.Rate, error) {
 
 	// Check if the rates is more than 1 hour old
 	if time.Since(rate.CreatedAt) > constants.UpdateInterval {
-		exchangeRate, fetchErr := s.fetchService.FetchExchangeRate()
+		exchangeRate, fetchErr := s.fetchService.Fetch()
 		if fetchErr != nil {
 			return model.Rate{}, fetchErr
 		}
