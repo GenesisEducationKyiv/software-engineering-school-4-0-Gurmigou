@@ -18,9 +18,9 @@ func NewBankRateFetchService() BankRateFetch {
 	return BankRateFetch{}
 }
 
-// Provider: privatbank-api
+// Fetch Provider: Privat Bank API
 func (s *BankRateFetch) Fetch() (float64, error) {
-	resp, err := http.Get(constants.RATE_BANK_API_URL + "TODO:REMOVE")
+	resp, err := http.Get(constants.RATE_BANK_API_URL)
 	if err != nil || resp.StatusCode != http.StatusOK {
 		logrus.WithError(err).Error("error fetching exchange rates")
 		return s.DefaultCurrencyFetcher.Fetch()
@@ -37,6 +37,7 @@ func (s *BankRateFetch) Fetch() (float64, error) {
 		logrus.WithError(err).Error("error reading response body")
 		return s.DefaultCurrencyFetcher.Fetch()
 	}
+	logrus.Info("Privat Bank API response: ", string(body))
 
 	var rates []RateAPIDto
 	err = json.Unmarshal(body, &rates)

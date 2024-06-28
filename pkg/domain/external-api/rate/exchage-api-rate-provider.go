@@ -16,7 +16,7 @@ func NewExchangeApiRateFetch() ExchangeApiRateFetch {
 	return ExchangeApiRateFetch{}
 }
 
-// Provider: Exchange rate api service
+// Fetch Provider: Exchange Rate API service
 func (s *ExchangeApiRateFetch) Fetch() (float64, error) {
 	resp, err := http.Get(constants.EXCHANGE_API_URL)
 	if err != nil {
@@ -35,6 +35,7 @@ func (s *ExchangeApiRateFetch) Fetch() (float64, error) {
 		logrus.WithError(err).Error("error reading response body")
 		return s.DefaultCurrencyFetcher.Fetch()
 	}
+	logrus.Info("Exchange Rate API Provider response: ", string(body))
 
 	var exchangeRate ExchangeRateAPI
 	err = json.Unmarshal(body, &exchangeRate)
