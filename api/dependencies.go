@@ -20,14 +20,17 @@ type dependencies struct {
 
 func wireDependencies() *dependencies {
 	InitEnv()
-	db := connectToDb()
+	db := setUpDatabase()
+
+	// Initialize repositories
+	rateRepository := rates.NewRateRepository(db)
 
 	// Initialize chain of Rate fetchers
 	bankFetchService := rate.NewBankRateFetchService()
 	exchangeFetchService := rate.NewExchangeApiRateFetch()
 	bankFetchService.SetNext(&exchangeFetchService)
 
-	rateService := rates.NewService(db, &bankFetchService)
+	rateService := rates.NewService(&rateRepository, &bankFetchService)
 	subscriberService := subscribers.NewService(db)
 	mailService := mails.NewService(&subscriberService, &rateService)
 	cronService := cron_jobs.NewService(&mailService)
@@ -44,7 +47,7 @@ func InitEnv() {
 	constants.InitEnvValues()
 }
 
-func connectToDb() *gorm.DB {
+func setUpDatabase() *gorm.DB {
 	initializer.RunMigrations()
 	db := initializer.ConnectToDatabase()
 	return db
