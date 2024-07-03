@@ -1,7 +1,6 @@
 package subscribers
 
 import (
-	"se-school-case/pkg/errors"
 	"se-school-case/pkg/model"
 )
 
@@ -23,7 +22,7 @@ func (s *SubscriberService) Add(email string) error {
 		return err
 	}
 	if exists {
-		return app_errors.ErrEmailAlreadyExists
+		return ErrEmailAlreadyExists
 	}
 
 	user := model.User{Email: email}

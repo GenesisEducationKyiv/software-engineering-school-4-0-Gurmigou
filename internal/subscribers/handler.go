@@ -4,7 +4,6 @@ import (
 	"errors"
 	"github.com/gin-gonic/gin"
 	"net/http"
-	"se-school-case/pkg/errors"
 	"se-school-case/pkg/model"
 )
 
@@ -45,7 +44,7 @@ func (h *Handler) AddUserEmail(context *gin.Context) {
 	}
 
 	if err := h.subscriberService.Add(input.Email); err != nil {
-		if errors.Is(err, app_errors.ErrEmailAlreadyExists) {
+		if errors.Is(err, ErrEmailAlreadyExists) {
 			context.JSON(http.StatusConflict, gin.H{"errors": "Email already exists"})
 		} else {
 			context.JSON(http.StatusInternalServerError, gin.H{"errors": "Failed to add email"})

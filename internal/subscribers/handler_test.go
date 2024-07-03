@@ -6,7 +6,6 @@ import (
 	"errors"
 	"net/http"
 	"net/http/httptest"
-	"se-school-case/pkg/errors"
 	"testing"
 
 	"github.com/gin-gonic/gin"
@@ -47,7 +46,7 @@ func TestAddUserEmail_EmailExists(t *testing.T) {
 	defer mockCtrl.Finish()
 
 	mockService := NewMockSubscriberInterface(mockCtrl)
-	mockService.EXPECT().Add("test@example.com").Return(app_errors.ErrEmailAlreadyExists).Times(1)
+	mockService.EXPECT().Add("test@example.com").Return(ErrEmailAlreadyExists).Times(1)
 
 	controller := &Handler{subscriberService: mockService}
 	router := gin.Default()
