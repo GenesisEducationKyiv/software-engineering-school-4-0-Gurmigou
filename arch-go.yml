@@ -1,0 +1,57 @@
+version: 1
+threshold:
+  compliance: 100
+  coverage: 80
+dependenciesRules:
+  - package: "cmd/myapp"
+    shouldOnlyDependsOn:
+      internal:
+        - "initializer"
+  - package: "initializer"
+    shouldOnlyDependsOn:
+      internal:
+        - "internal"
+        - "pkg"
+        - "db"
+  - package: "db"
+    shouldOnlyDependsOn:
+      internal:
+        - "pkg"
+  - package: "internal/cron-jobs"
+    shouldOnlyDependsOn:
+      internal:
+        - "internal"
+        - "pkg/constants"
+  - package: "internal/external-api/rate"
+    shouldOnlyDependsOn:
+      internal:
+        - "pkg/constants"
+        - "pkg/util"
+  - package: "internal/mails"
+    shouldOnlyDependsOn:
+      internal:
+        - "internal/cron-jobs"
+        - "internal/rates"
+        - "internal/subscribers"
+        - "pkg/constants"
+        - "pkg/util"
+        - "pkg/model"
+  - package: "internal/rates"
+    shouldOnlyDependsOn:
+      internal:
+        - "pkg/model"
+        - "pkg/constants"
+        - "internal/external-api/rate"
+  - package: "internal/subscribers"
+    shouldOnlyDependsOn:
+      internal:
+        - "pkg/model"
+  - package: "pkg/constants"
+    shouldOnlyDependsOn:
+      internal:
+  - package: "pkg/model"
+    shouldOnlyDependsOn:
+      internal:
+  - package: "pkg/util"
+    shouldOnlyDependsOn:
+      internal:
