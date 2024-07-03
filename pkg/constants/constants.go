@@ -12,23 +12,19 @@ const (
 )
 
 var (
-	PORT              string
-	DB_URL            string
-	DB_FULL_URL       string
-	RATE_BANK_API_URL string
-	EXCHANGE_API_URL  string
-	GOOGLE_USERNAME   string
-	GOOGLE_PASSWORD   string
-	TEMPLATE_PATH     string
-	EMAIL_SEND_TIME   string
+	PORT            string
+	DB_URL          string
+	DB_FULL_URL     string
+	GOOGLE_USERNAME string
+	GOOGLE_PASSWORD string
+	TEMPLATE_PATH   string
+	EMAIL_SEND_TIME string
 )
 
 func InitEnvValues() {
 	PORT = os.Getenv("PORT")
 	DB_URL = os.Getenv("DB_URL")
 	DB_FULL_URL = os.Getenv("DB_FULL_URL")
-	RATE_BANK_API_URL = os.Getenv("RATE_BANK_API_URL")
-	EXCHANGE_API_URL = os.Getenv("EXCHANGE_API_URL")
 	GOOGLE_USERNAME = os.Getenv("GOOGLE_USERNAME")
 	GOOGLE_PASSWORD = os.Getenv("GOOGLE_PASSWORD")
 	TEMPLATE_PATH = os.Getenv("TEMPLATE_PATH")

@@ -9,6 +9,10 @@ import (
 	"se-school-case/pkg/util"
 )
 
+const (
+	RateBankApiUrl = "https://api.privatbank.ua/p24api/pubinfo?json&exchange&coursid=5"
+)
+
 type BankRateFetch struct {
 	DefaultCurrencyFetcher
 }
@@ -19,7 +23,7 @@ func NewBankRateFetchService() BankRateFetch {
 
 // Fetch Provider: Privat Bank API
 func (s *BankRateFetch) Fetch() (float64, error) {
-	resp, err := http.Get(constants.RATE_BANK_API_URL)
+	resp, err := http.Get(RateBankApiUrl)
 	if err != nil || resp.StatusCode != http.StatusOK {
 		logrus.WithError(err).Error("error fetching exchange rates")
 		return s.DefaultCurrencyFetcher.Fetch()

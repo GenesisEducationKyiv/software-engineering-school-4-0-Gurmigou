@@ -5,7 +5,10 @@ import (
 	"github.com/sirupsen/logrus"
 	"io"
 	"net/http"
-	"se-school-case/pkg/constants"
+)
+
+const (
+	ExchangeApiUrl = "https://cdn.jsdelivr.net/npm/@fawazahmed0/currency-api@latest/v1/currencies/usd.json"
 )
 
 type ExchangeApiRateFetch struct {
@@ -18,7 +21,7 @@ func NewExchangeApiRateFetch() ExchangeApiRateFetch {
 
 // Fetch Provider: Exchange Rate API service
 func (s *ExchangeApiRateFetch) Fetch() (float64, error) {
-	resp, err := http.Get(constants.EXCHANGE_API_URL)
+	resp, err := http.Get(ExchangeApiUrl)
 	if err != nil {
 		logrus.WithError(err).Error("error fetching exchange rates")
 		return s.DefaultCurrencyFetcher.Fetch()
