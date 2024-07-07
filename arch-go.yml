@@ -35,21 +35,21 @@ dependenciesRules:
         - "internal/subscribers"
         - "pkg/constants"
         - "pkg/util"
-        - "pkg/model"
+        - "pkg/models"
   - package: "internal/rates"
     shouldOnlyDependsOn:
       internal:
-        - "pkg/model"
+        - "pkg/models"
         - "pkg/constants"
         - "internal/external-api/rate"
   - package: "internal/subscribers"
     shouldOnlyDependsOn:
       internal:
-        - "pkg/model"
+        - "pkg/models"
   - package: "pkg/constants"
     shouldOnlyDependsOn:
       internal:
-  - package: "pkg/model"
+  - package: "pkg/models"
     shouldOnlyDependsOn:
       internal:
   - package: "pkg/util"

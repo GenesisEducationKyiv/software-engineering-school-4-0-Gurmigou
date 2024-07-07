@@ -2,9 +2,9 @@ package initializer
 
 import (
 	"github.com/gin-gonic/gin"
-	cronjobs "se-school-case/internal/cron-jobs"
-	"se-school-case/internal/rates"
-	"se-school-case/internal/subscribers"
+	cronjobs "se-school-case/internal/cron-jobs/handler"
+	rateshandler "se-school-case/internal/rates/handler"
+	subhandler "se-school-case/internal/subscribers/handler"
 )
 
 type Api interface {
@@ -19,8 +19,8 @@ func NewApi() Api {
 	engine := gin.Default()
 	deps := wireDependencies()
 	deps.cronService.StartScheduler()
-	rates.NewHandler(deps.rateService).Register(engine)
-	subscribers.NewHandler(deps.subscriberService).Register(engine)
+	rateshandler.NewHandler(deps.rateService).Register(engine)
+	subhandler.NewHandler(deps.subscriberService).Register(engine)
 	cronjobs.NewHandler(deps.mailService).Register(engine)
 	return &api{engine}
 }

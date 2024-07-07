@@ -3,18 +3,23 @@ package initializer
 import (
 	"gorm.io/gorm"
 	"se-school-case/db"
-	cronjobs "se-school-case/internal/cron-jobs"
-	"se-school-case/internal/external-api/rate"
-	"se-school-case/internal/mails"
-	"se-school-case/internal/rates"
-	"se-school-case/internal/subscribers"
+	"se-school-case/infra/external-api/rate/providers"
+	cronjobs "se-school-case/internal/cron-jobs/handler"
+	jobsservice "se-school-case/internal/cron-jobs/service"
+	mailsservice "se-school-case/internal/mails/service"
+	rateshandler "se-school-case/internal/rates/handler"
+	ratesrepo "se-school-case/internal/rates/repo"
+	ratesservice "se-school-case/internal/rates/service"
+	subhandler "se-school-case/internal/subscribers/handler"
+	subrepo "se-school-case/internal/subscribers/repo"
+	subservice "se-school-case/internal/subscribers/service"
 	"se-school-case/pkg/constants"
 )
 
 type dependencies struct {
-	subscriberService subscribers.SubscriberInterface
-	rateService       rates.RateInterface
-	mailService       mails.MailInterface
+	subscriberService subhandler.SubscriberInterface
+	rateService       rateshandler.RateInterface
+	mailService       mailsservice.MailInterface
 	cronService       cronjobs.CronJobsInterface
 }
 
@@ -23,18 +28,18 @@ func wireDependencies() *dependencies {
 	db := setUpDatabase()
 
 	// Initialize repositories
-	rateRepository := rates.NewRateRepository(db)
-	subscriberRepository := subscribers.NewSubscriberRepository(db)
+	rateRepository := ratesrepo.NewRateRepository(db)
+	subscriberRepository := subrepo.NewSubscriberRepository(db)
 
 	// Initialize chain of Rate fetchers
-	bankFetchService := rate.NewBankRateFetchService()
-	exchangeFetchService := rate.NewExchangeApiRateFetch()
+	bankFetchService := providers.NewBankRateFetchService()
+	exchangeFetchService := providers.NewExchangeApiRateFetch()
 	bankFetchService.SetNext(&exchangeFetchService)
 
-	rateService := rates.NewService(&rateRepository, &bankFetchService)
-	subscriberService := subscribers.NewService(&subscriberRepository)
-	mailService := mails.NewService(&subscriberService, &rateService)
-	cronService := cronjobs.NewService(&mailService)
+	rateService := ratesservice.NewService(&rateRepository, &bankFetchService)
+	subscriberService := subservice.NewService(&subscriberRepository)
+	mailService := mailsservice.NewService(&subscriberService, &rateService)
+	cronService := jobsservice.NewService(&mailService)
 	return &dependencies{
 		subscriberService: &subscriberService,
 		rateService:       &rateService,
