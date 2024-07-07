@@ -10,38 +10,38 @@ dependenciesRules:
   - package: "initializer"
     shouldOnlyDependsOn:
       internal:
-        - "internal"
+        - "internal/**"
         - "pkg"
         - "db"
   - package: "db"
     shouldOnlyDependsOn:
       internal:
         - "pkg"
-  - package: "internal/cron-jobs"
+  - package: "internal/cron-jobs/**"
     shouldOnlyDependsOn:
       internal:
-        - "internal"
+        - "internal/**"
         - "pkg/constants"
-  - package: "internal/external-api/rate"
+  - package: "internal/external-api/rate/**"
     shouldOnlyDependsOn:
       internal:
         - "pkg/constants"
         - "pkg/util"
-  - package: "internal/mails"
+  - package: "internal/mails/**"
     shouldOnlyDependsOn:
       internal:
-        - "internal/cron-jobs"
-        - "internal/rates"
-        - "internal/subscribers"
+        - "internal/cron-jobs/**"
+        - "internal/rates/**"
+        - "internal/subscribers/**"
         - "pkg/constants"
         - "pkg/util"
         - "pkg/models"
-  - package: "internal/rates"
+  - package: "internal/rates/**"
     shouldOnlyDependsOn:
       internal:
         - "pkg/models"
         - "pkg/constants"
-        - "internal/external-api/rate"
+        - "infra/external-api/rate/**"
   - package: "internal/subscribers"
     shouldOnlyDependsOn:
       internal:
