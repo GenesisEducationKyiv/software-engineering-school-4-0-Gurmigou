@@ -1,4 +1,4 @@
-package providers
+package provider
 
 import (
 	"encoding/json"
@@ -6,7 +6,7 @@ import (
 	"io"
 	"net/http"
 	"se-school-case/infra/external-api/rate"
-	"se-school-case/infra/external-api/rate/models"
+	"se-school-case/infra/external-api/rate/model"
 )
 
 const (
@@ -42,7 +42,7 @@ func (s *ExchangeApiRateFetch) Fetch() (float64, error) {
 	}
 	logrus.Info("Exchange Rate API Provider response: ", string(body))
 
-	var exchangeRate models.ExchangeRateAPI
+	var exchangeRate model.ExchangeRateAPI
 	err = json.Unmarshal(body, &exchangeRate)
 	if err != nil {
 		logrus.WithError(err).Error("error unmarshaling response")

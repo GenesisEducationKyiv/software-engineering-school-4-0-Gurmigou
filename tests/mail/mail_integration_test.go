@@ -3,8 +3,8 @@ package mail
 import (
 	"errors"
 	"se-school-case/internal/mails/service"
-	ratemocks "se-school-case/internal/rates/handler/mocks"
-	submocks "se-school-case/internal/subscribers/handler/mocks"
+	ratemocks "se-school-case/internal/rates/handler/mock"
+	submocks "se-school-case/internal/subscribers/handler/mock"
 	"se-school-case/pkg/constants"
 	"testing"
 

@@ -2,7 +2,7 @@
 // Source: handler.go
 
 // Package mock_rates is a generated GoMock package.
-package mocks
+package mock
 
 import (
 	reflect "reflect"
@@ -34,7 +34,7 @@ func (m *MockRateInterface) EXPECT() *MockRateInterfaceMockRecorder {
 	return m.recorder
 }
 
-// GetRate mocks base method.
+// GetRate mock base method.
 func (m *MockRateInterface) GetRate() (model.Rate, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "GetRate")
@@ -49,7 +49,7 @@ func (mr *MockRateInterfaceMockRecorder) GetRate() *gomock.Call {
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetRate", reflect.TypeOf((*MockRateInterface)(nil).GetRate))
 }
 
-// SaveRate mocks base method.
+// SaveRate mock base method.
 func (m *MockRateInterface) SaveRate(currencyFrom, currencyTo string, exchangeRate float64) {
 	m.ctrl.T.Helper()
 	m.ctrl.Call(m, "SaveRate", currencyFrom, currencyTo, exchangeRate)
@@ -84,7 +84,7 @@ func (m *MockRateFetchInterface) EXPECT() *MockRateFetchInterfaceMockRecorder {
 	return m.recorder
 }
 
-// FetchExchangeRate mocks base method.
+// FetchExchangeRate mock base method.
 func (m *MockRateFetchInterface) FetchExchangeRate() (float64, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "FetchExchangeRate")

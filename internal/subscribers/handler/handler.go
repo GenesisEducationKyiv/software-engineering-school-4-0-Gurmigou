@@ -5,7 +5,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"net/http"
 	suberrors "se-school-case/internal/subscribers/errors"
-	"se-school-case/internal/subscribers/models"
+	submodel "se-school-case/internal/subscribers/model"
 	"se-school-case/pkg/model"
 )
 
@@ -38,7 +38,7 @@ func (h *Handler) Register(engine *gin.Engine) {
 //	409: body:gin.H{"errors": "Email already exists"}
 //	500: body:gin.H{"errors": "Failed to add email"}
 func (h *Handler) AddUserEmail(context *gin.Context) {
-	var input models.EmailDto
+	var input submodel.EmailDto
 
 	if err := context.ShouldBind(&input); err != nil {
 		context.JSON(http.StatusBadRequest, gin.H{"errors": "Email request body is not correct."})

@@ -2,7 +2,7 @@
 // Source: handler.go
 
 // Package mock_subscribers is a generated GoMock package.
-package mocks
+package mock
 
 import (
 	reflect "reflect"
@@ -34,7 +34,7 @@ func (m *MockSubscriberInterface) EXPECT() *MockSubscriberInterfaceMockRecorder 
 	return m.recorder
 }
 
-// Add mocks base method.
+// Add mock base method.
 func (m *MockSubscriberInterface) Add(email string) error {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "Add", email)
@@ -48,7 +48,7 @@ func (mr *MockSubscriberInterfaceMockRecorder) Add(email interface{}) *gomock.Ca
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Add", reflect.TypeOf((*MockSubscriberInterface)(nil).Add), email)
 }
 
-// GetAll mocks base method.
+// GetAll mock base method.
 func (m *MockSubscriberInterface) GetAll() ([]model.User, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "GetAll")

@@ -3,7 +3,7 @@ package initializer
 import (
 	"gorm.io/gorm"
 	"se-school-case/db"
-	"se-school-case/infra/external-api/rate/providers"
+	"se-school-case/infra/external-api/rate/provider"
 	cronjobs "se-school-case/internal/cron-jobs/handler"
 	jobsservice "se-school-case/internal/cron-jobs/service"
 	mailsservice "se-school-case/internal/mails/service"
@@ -32,8 +32,8 @@ func wireDependencies() *dependencies {
 	subscriberRepository := subrepo.NewSubscriberRepository(db)
 
 	// Initialize chain of Rate fetchers
-	bankFetchService := providers.NewBankRateFetchService()
-	exchangeFetchService := providers.NewExchangeApiRateFetch()
+	bankFetchService := provider.NewBankRateFetchService()
+	exchangeFetchService := provider.NewExchangeApiRateFetch()
 	bankFetchService.SetNext(&exchangeFetchService)
 
 	rateService := ratesservice.NewService(&rateRepository, &bankFetchService)

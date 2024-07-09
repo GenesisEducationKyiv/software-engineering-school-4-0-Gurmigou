@@ -7,7 +7,7 @@ import (
 	"github.com/stretchr/testify/assert"
 	"net/http"
 	"net/http/httptest"
-	"se-school-case/internal/rates/handler/mocks"
+	"se-school-case/internal/rates/handler/mock"
 	"se-school-case/pkg/model"
 	"testing"
 )
@@ -19,7 +19,7 @@ func TestHandler_GetExchangeRate_Success(t *testing.T) {
 	mockCtrl := gomock.NewController(t)
 	defer mockCtrl.Finish()
 
-	mockRateService := mocks.NewMockRateInterface(mockCtrl)
+	mockRateService := mock.NewMockRateInterface(mockCtrl)
 	mockRateService.EXPECT().GetRate().Return(model.Rate{Rate: 37.07}, nil).Times(1)
 
 	handler := NewHandler(mockRateService)
@@ -45,7 +45,7 @@ func TestHandler_GetExchangeRate_Failure(t *testing.T) {
 	mockCtrl := gomock.NewController(t)
 	defer mockCtrl.Finish()
 
-	mockRateService := mocks.NewMockRateInterface(mockCtrl)
+	mockRateService := mock.NewMockRateInterface(mockCtrl)
 	mockRateService.EXPECT().GetRate().Return(model.Rate{}, errors.New("service error")).Times(1)
 
 	handler := NewHandler(mockRateService)

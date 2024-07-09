@@ -1,4 +1,4 @@
-package models
+package model
 
 type ExchangeRateAPI struct {
 	Date    string             `json:"date"`

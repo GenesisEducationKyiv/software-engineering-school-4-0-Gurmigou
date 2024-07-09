@@ -45,20 +45,20 @@ func TestArchitecture(t *testing.T) {
 				ShouldOnlyDependsOn: &config.Dependencies{
 					Internal: []string{
 						"internal/cron-jobs/**", "internal/rates/**", "internal/subscribers/**",
-						"pkg/constants", "pkg/util", "pkg/models",
+						"pkg/constants", "pkg/util", "pkg/model",
 					},
 				},
 			},
 			{
 				Package: "internal/rates/**",
 				ShouldOnlyDependsOn: &config.Dependencies{
-					Internal: []string{"pkg/models", "pkg/constants", "infra/external-api/rate/**"},
+					Internal: []string{"pkg/model", "pkg/constants", "infra/external-api/rate/**"},
 				},
 			},
 			{
 				Package: "internal/subscribers",
 				ShouldOnlyDependsOn: &config.Dependencies{
-					Internal: []string{"pkg/models"},
+					Internal: []string{"pkg/model"},
 				},
 			},
 			{
@@ -66,7 +66,7 @@ func TestArchitecture(t *testing.T) {
 				ShouldOnlyDependsOn: &config.Dependencies{},
 			},
 			{
-				Package:             "pkg/models",
+				Package:             "pkg/model",
 				ShouldOnlyDependsOn: &config.Dependencies{},
 			},
 			{

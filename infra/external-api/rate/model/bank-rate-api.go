@@ -1,4 +1,4 @@
-package models
+package model
 
 type RateAPIDto struct {
 	CCY     string `json:"ccy"`

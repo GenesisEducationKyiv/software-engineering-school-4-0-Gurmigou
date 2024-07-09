@@ -2,7 +2,7 @@
 // Source: service.go
 
 // Package mock_mails is a generated GoMock package.
-package mocks
+package mock
 
 import (
 	reflect "reflect"
@@ -33,7 +33,7 @@ func (m *MockMailInterface) EXPECT() *MockMailInterfaceMockRecorder {
 	return m.recorder
 }
 
-// SendEmail mocks base method.
+// SendEmail mock base method.
 func (m *MockMailInterface) SendEmail(subject, templatePath, sendTo string, rate float64) error {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "SendEmail", subject, templatePath, sendTo, rate)
@@ -47,7 +47,7 @@ func (mr *MockMailInterfaceMockRecorder) SendEmail(subject, templatePath, sendTo
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "SendEmail", reflect.TypeOf((*MockMailInterface)(nil).SendEmail), subject, templatePath, sendTo, rate)
 }
 
-// SendEmailToAll mocks base method.
+// SendEmailToAll mock base method.
 func (m *MockMailInterface) SendEmailToAll(subject, templatePath string) {
 	m.ctrl.T.Helper()
 	m.ctrl.Call(m, "SendEmailToAll", subject, templatePath)

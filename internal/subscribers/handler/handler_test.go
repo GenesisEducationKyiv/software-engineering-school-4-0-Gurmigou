@@ -7,8 +7,8 @@ import (
 	"net/http"
 	"net/http/httptest"
 	suberrors "se-school-case/internal/subscribers/errors"
-	"se-school-case/internal/subscribers/handler/mocks"
-	"se-school-case/internal/subscribers/models"
+	"se-school-case/internal/subscribers/handler/mock"
+	"se-school-case/internal/subscribers/model"
 	"testing"
 
 	"github.com/gin-gonic/gin"
@@ -20,7 +20,7 @@ func TestAddUserEmail_Success(t *testing.T) {
 	mockCtrl := gomock.NewController(t)
 	defer mockCtrl.Finish()
 
-	mockService := mocks.NewMockSubscriberInterface(mockCtrl)
+	mockService := mock.NewMockSubscriberInterface(mockCtrl)
 	mockService.EXPECT().Add("test@example.com").Return(nil).Times(1)
 
 	handler := &Handler{subscriberService: mockService}
@@ -48,7 +48,7 @@ func TestAddUserEmail_EmailExists(t *testing.T) {
 	mockCtrl := gomock.NewController(t)
 	defer mockCtrl.Finish()
 
-	mockService := mocks.NewMockSubscriberInterface(mockCtrl)
+	mockService := mock.NewMockSubscriberInterface(mockCtrl)
 	mockService.EXPECT().Add("test@example.com").Return(suberrors.ErrEmailAlreadyExists).Times(1)
 
 	controller := Handler{subscriberService: mockService}
@@ -81,7 +81,7 @@ func TestAddUserEmail_InvalidEmail(t *testing.T) {
 	router := gin.Default()
 	router.POST("/api/subscribe", controller.AddUserEmail)
 
-	requestBody, err := json.Marshal(models.EmailDto{Email: "invalid-email"})
+	requestBody, err := json.Marshal(model.EmailDto{Email: "invalid-email"})
 	assert.NoError(t, err)
 
 	req, err := http.NewRequest("POST", "/api/subscribe", bytes.NewBuffer(requestBody))
@@ -99,7 +99,7 @@ func TestAddUserEmail_InternalServerError(t *testing.T) {
 	mockCtrl := gomock.NewController(t)
 	defer mockCtrl.Finish()
 
-	mockService := mocks.NewMockSubscriberInterface(mockCtrl)
+	mockService := mock.NewMockSubscriberInterface(mockCtrl)
 	mockService.EXPECT().Add("test@example.com").Return(errors.New("internal error")).Times(1)
 
 	handler := &Handler{subscriberService: mockService}

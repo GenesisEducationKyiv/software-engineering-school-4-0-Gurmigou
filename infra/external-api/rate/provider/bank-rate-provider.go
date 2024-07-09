@@ -1,4 +1,4 @@
-package providers
+package provider
 
 import (
 	"encoding/json"
@@ -6,7 +6,7 @@ import (
 	"io"
 	"net/http"
 	"se-school-case/infra/external-api/rate"
-	"se-school-case/infra/external-api/rate/models"
+	"se-school-case/infra/external-api/rate/model"
 	"se-school-case/pkg/constants"
 	"se-school-case/pkg/util"
 )
@@ -44,7 +44,7 @@ func (s *BankRateFetch) Fetch() (float64, error) {
 	}
 	logrus.Info("Privat Bank API response: ", string(body))
 
-	var rates []models.RateAPIDto
+	var rates []model.RateAPIDto
 	err = json.Unmarshal(body, &rates)
 	if err != nil {
 		logrus.WithError(err).Error("error unmarshaling response")

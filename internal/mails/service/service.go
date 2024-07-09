@@ -6,7 +6,7 @@ import (
 	"log"
 	"net/smtp"
 	"se-school-case/internal/cron-jobs/service"
-	"se-school-case/internal/mails/models"
+	"se-school-case/internal/mails/model"
 	rateshandler "se-school-case/internal/rates/handler"
 	subhandler "se-school-case/internal/subscribers/handler"
 	"se-school-case/pkg/constants"
@@ -59,7 +59,7 @@ func (s *MailService) SendEmail(subject string, templatePath string, sendTo stri
 		return fmt.Errorf("failed to parse template: %w", err)
 	}
 
-	err = t.Execute(&body, models.EmailSendDto{
+	err = t.Execute(&body, model.EmailSendDto{
 		Email:       sendTo,
 		CurrentDate: util.GetCurrentDateString(),
 		Rate:        fmt.Sprintf("%.2f", rate),
