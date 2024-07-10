@@ -1,47 +1,24 @@
-package service
+package mail
 
 import (
 	"bytes"
 	"fmt"
-	"log"
 	"net/smtp"
-	"se-school-case/internal/mail/model"
 	"se-school-case/pkg/constants"
 	"se-school-case/pkg/util"
 	"text/template"
 )
 
-type MailService struct {
-	subscriberService SubscriberInterface
-	rateService       RateInterface
+type EmailSendDto struct {
+	Email       string
+	CurrentDate string
+	Rate        string
 }
 
-func NewService(subscriberService SubscriberInterface, rateService RateInterface) MailService {
-	return MailService{
-		subscriberService: subscriberService,
-		rateService:       rateService,
-	}
-}
+type MailService struct{}
 
-func (s *MailService) SendEmailToAll(subject string, templatePath string) error {
-	users, err := s.subscriberService.GetAll()
-	if err != nil {
-		return fmt.Errorf("failed to get users: %w", err)
-	}
-
-	rateResp, err := s.rateService.GetRate()
-	if err != nil {
-		return fmt.Errorf("failed to get latest rate: %w", err)
-	}
-
-	for _, userResp := range users {
-		err := s.SendEmail(subject, templatePath, userResp.Email, rateResp.Rate)
-		if err != nil {
-			log.Printf("Failed to send email to %s: %v", userResp.Email, err)
-			return fmt.Errorf("failed to send email to %s: %v", userResp.Email, err)
-		}
-	}
-	return nil
+func NewService() MailService {
+	return MailService{}
 }
 
 func (s *MailService) SendEmail(subject string, templatePath string, sendTo string, rate float64) error {
@@ -51,7 +28,7 @@ func (s *MailService) SendEmail(subject string, templatePath string, sendTo stri
 		return fmt.Errorf("failed to parse template: %w", err)
 	}
 
-	err = t.Execute(&body, model.EmailSendDto{
+	err = t.Execute(&body, EmailSendDto{
 		Email:       sendTo,
 		CurrentDate: util.GetCurrentDateString(),
 		Rate:        fmt.Sprintf("%.2f", rate),
