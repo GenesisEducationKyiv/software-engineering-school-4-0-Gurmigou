@@ -56,6 +56,7 @@ func TestArchitecture(t *testing.T) {
 				},
 			},
 			{
+				Package: "internal/subscriber",
 				ShouldOnlyDependsOn: &config.Dependencies{
 					Internal: []string{"pkg/model"},
 				},
