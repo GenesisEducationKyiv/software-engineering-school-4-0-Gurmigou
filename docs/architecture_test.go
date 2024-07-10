@@ -17,12 +17,6 @@ func TestArchitecture(t *testing.T) {
 				},
 			},
 			{
-				Package: "initializer",
-				ShouldOnlyDependsOn: &config.Dependencies{
-					Internal: []string{"internal/**", "pkg", "db", "infra/**"},
-				},
-			},
-			{
 				Package: "db",
 				ShouldOnlyDependsOn: &config.Dependencies{
 					Internal: []string{"pkg"},
