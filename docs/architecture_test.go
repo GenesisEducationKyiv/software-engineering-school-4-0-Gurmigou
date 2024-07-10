@@ -19,7 +19,7 @@ func TestArchitecture(t *testing.T) {
 			{
 				Package: "initializer",
 				ShouldOnlyDependsOn: &config.Dependencies{
-					Internal: []string{"internal/**", "pkg", "db"},
+					Internal: []string{"internal/**", "pkg", "db", "infra/**"},
 				},
 			},
 			{
