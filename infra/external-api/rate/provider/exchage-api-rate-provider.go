@@ -25,7 +25,7 @@ func NewExchangeApiRateFetch() ExchangeApiRateFetch {
 func (s *ExchangeApiRateFetch) Fetch() (float64, error) {
 	resp, err := http.Get(ExchangeApiUrl)
 	if err != nil {
-		logrus.WithError(err).Error("error fetching exchange rates")
+		logrus.WithError(err).Error("error fetching exchange rate")
 		return s.DefaultCurrencyFetcher.Fetch()
 	}
 	defer func(Body io.ReadCloser) {
@@ -51,7 +51,7 @@ func (s *ExchangeApiRateFetch) Fetch() (float64, error) {
 
 	uahRate := exchangeRate.RateMap["uah"]
 	if uahRate == 0 {
-		logrus.Error("rates not found")
+		logrus.Error("rate not found")
 		return s.DefaultCurrencyFetcher.Fetch()
 	}
 

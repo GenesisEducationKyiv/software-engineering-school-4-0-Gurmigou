@@ -6,9 +6,9 @@ import (
 	"errors"
 	"net/http"
 	"net/http/httptest"
-	suberrors "se-school-case/internal/subscribers/errors"
-	"se-school-case/internal/subscribers/handler/mock"
-	"se-school-case/internal/subscribers/model"
+	suberrors "se-school-case/internal/subscriber/errors"
+	"se-school-case/internal/subscriber/handler/mock"
+	"se-school-case/internal/subscriber/model"
 	"testing"
 
 	"github.com/gin-gonic/gin"

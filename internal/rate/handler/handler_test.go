@@ -7,7 +7,7 @@ import (
 	"github.com/stretchr/testify/assert"
 	"net/http"
 	"net/http/httptest"
-	"se-school-case/internal/rates/handler/mock"
+	"se-school-case/internal/rate/handler/mock"
 	"se-school-case/pkg/model"
 	"testing"
 )
@@ -24,7 +24,7 @@ func TestHandler_GetExchangeRate_Success(t *testing.T) {
 
 	handler := NewHandler(mockRateService)
 	router := gin.Default()
-	router.GET("/api/rates", handler.GetExchangeRate)
+	router.GET("/api/rate", handler.GetExchangeRate)
 
 	// Act
 	req, err := http.NewRequest("GET", "/api/rates", nil)
@@ -50,7 +50,7 @@ func TestHandler_GetExchangeRate_Failure(t *testing.T) {
 
 	handler := NewHandler(mockRateService)
 	router := gin.Default()
-	router.GET("/api/rates", handler.GetExchangeRate)
+	router.GET("/api/rate", handler.GetExchangeRate)
 
 	req, err := http.NewRequest("GET", "/api/rates", nil)
 	assert.NoError(t, err)
@@ -61,5 +61,5 @@ func TestHandler_GetExchangeRate_Failure(t *testing.T) {
 
 	// Assert
 	assert.Equal(t, http.StatusInternalServerError, rr.Code)
-	assert.JSONEq(t, `{"errors": "Failed to get the latest rates"}`, rr.Body.String())
+	assert.JSONEq(t, `{"errors": "Failed to get the latest rate"}`, rr.Body.String())
 }

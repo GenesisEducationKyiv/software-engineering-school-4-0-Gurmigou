@@ -4,8 +4,8 @@ import (
 	"errors"
 	"github.com/gin-gonic/gin"
 	"net/http"
-	suberrors "se-school-case/internal/subscribers/errors"
-	submodel "se-school-case/internal/subscribers/model"
+	suberrors "se-school-case/internal/subscriber/errors"
+	submodel "se-school-case/internal/subscriber/model"
 	"se-school-case/pkg/model"
 )
 
@@ -27,9 +27,9 @@ func (h *Handler) Register(engine *gin.Engine) {
 }
 
 // swagger:route POST /api/subscribe Subscriber addUserEmail
-// Add a new subscribers email
+// Add a new subscriber email
 //
-// Adds a new email to the list of subscribers.
+// Adds a new email to the list of subscriber.
 //
 // responses:
 //

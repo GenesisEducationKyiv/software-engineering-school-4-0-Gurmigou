@@ -5,26 +5,18 @@ import (
 	"fmt"
 	"log"
 	"net/smtp"
-	"se-school-case/internal/cron-jobs/service"
-	"se-school-case/internal/mails/model"
-	rateshandler "se-school-case/internal/rates/handler"
-	subhandler "se-school-case/internal/subscribers/handler"
+	"se-school-case/internal/mail/model"
 	"se-school-case/pkg/constants"
 	"se-school-case/pkg/util"
 	"text/template"
 )
 
-type MailInterface interface {
-	service.MailInterface
-	SendEmail(subject string, templatePath string, sendTo string, rate float64) error
-}
-
 type MailService struct {
-	subscriberService subhandler.SubscriberInterface
-	rateService       rateshandler.RateInterface
+	subscriberService SubscriberInterface
+	rateService       RateInterface
 }
 
-func NewService(subscriberService subhandler.SubscriberInterface, rateService rateshandler.RateInterface) MailService {
+func NewService(subscriberService SubscriberInterface, rateService RateInterface) MailService {
 	return MailService{
 		subscriberService: subscriberService,
 		rateService:       rateService,
@@ -39,7 +31,7 @@ func (s *MailService) SendEmailToAll(subject string, templatePath string) error 
 
 	rateResp, err := s.rateService.GetRate()
 	if err != nil {
-		return fmt.Errorf("failed to get latest rates: %w", err)
+		return fmt.Errorf("failed to get latest rate: %w", err)
 	}
 
 	for _, userResp := range users {

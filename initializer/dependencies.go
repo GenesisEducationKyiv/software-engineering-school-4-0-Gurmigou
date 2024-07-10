@@ -6,20 +6,20 @@ import (
 	"se-school-case/infra/external-api/rate/provider"
 	cronjobs "se-school-case/internal/cron-jobs/handler"
 	jobsservice "se-school-case/internal/cron-jobs/service"
-	mailsservice "se-school-case/internal/mails/service"
-	rateshandler "se-school-case/internal/rates/handler"
-	ratesrepo "se-school-case/internal/rates/repo"
-	ratesservice "se-school-case/internal/rates/service"
-	subhandler "se-school-case/internal/subscribers/handler"
-	subrepo "se-school-case/internal/subscribers/repo"
-	subservice "se-school-case/internal/subscribers/service"
+	"se-school-case/internal/mail/service"
+	rateshandler "se-school-case/internal/rate/handler"
+	ratesrepo "se-school-case/internal/rate/repo"
+	ratesservice "se-school-case/internal/rate/service"
+	subhandler "se-school-case/internal/subscriber/handler"
+	subrepo "se-school-case/internal/subscriber/repo"
+	subservice "se-school-case/internal/subscriber/service"
 	"se-school-case/pkg/constants"
 )
 
 type dependencies struct {
 	subscriberService subhandler.SubscriberInterface
 	rateService       rateshandler.RateInterface
-	mailService       mailsservice.MailInterface
+	mailService       service.MailService
 	cronService       cronjobs.CronJobsInterface
 }
 
@@ -38,12 +38,12 @@ func wireDependencies() *dependencies {
 
 	rateService := ratesservice.NewService(&rateRepository, &bankFetchService)
 	subscriberService := subservice.NewService(&subscriberRepository)
-	mailService := mailsservice.NewService(&subscriberService, &rateService)
+	mailService := service.NewService(&subscriberService, &rateService)
 	cronService := jobsservice.NewService(&mailService)
 	return &dependencies{
 		subscriberService: &subscriberService,
 		rateService:       &rateService,
-		mailService:       &mailService,
+		mailService:       mailService,
 		cronService:       &cronService,
 	}
 }

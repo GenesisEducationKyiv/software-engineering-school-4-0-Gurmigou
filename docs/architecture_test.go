@@ -41,22 +41,22 @@ func TestArchitecture(t *testing.T) {
 				},
 			},
 			{
-				Package: "internal/mails/**",
+				Package: "internal/mail/**",
 				ShouldOnlyDependsOn: &config.Dependencies{
 					Internal: []string{
-						"internal/cron-jobs/**", "internal/rates/**", "internal/subscribers/**",
+						"internal/cron-jobs/**", "internal/rate/**", "internal/subscriber/**",
 						"pkg/constants", "pkg/util", "pkg/model",
 					},
 				},
 			},
 			{
-				Package: "internal/rates/**",
+				Package: "internal/rate/**",
 				ShouldOnlyDependsOn: &config.Dependencies{
 					Internal: []string{"pkg/model", "pkg/constants", "infra/external-api/rate/**"},
 				},
 			},
 			{
-				Package: "internal/subscribers",
+				Package: "internal/subscriber",
 				ShouldOnlyDependsOn: &config.Dependencies{
 					Internal: []string{"pkg/model"},
 				},

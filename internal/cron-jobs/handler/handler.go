@@ -25,15 +25,15 @@ func (h *CronJobsHandler) Register(engine *gin.Engine) {
 }
 
 // swagger:route POST /api/notify CronJobs postExplicitlyNotify
-// Explicitly notify all subscribers
+// Explicitly notify all subscriber
 //
-// Sends an email notification to all subscribers about the exchange rates.
+// Sends an email notification to all subscriber about the exchange rate.
 //
 // responses:
 //
 //	200: body:gin.H{"message": "Successfully notified all users."}
 func (h *CronJobsHandler) ExplicitlyNotify(context *gin.Context) {
-	err := h.mailService.SendEmailToAll("Exchange rates notification", constants.TEMPLATE_PATH)
+	err := h.mailService.SendEmailToAll("Exchange rate notification", constants.TEMPLATE_PATH)
 	if err != nil {
 		context.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to notify users - " + err.Error()})
 	} else {

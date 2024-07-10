@@ -1,8 +1,8 @@
 package service
 
 import (
-	"se-school-case/internal/subscribers/errors"
-	"se-school-case/internal/subscribers/repo"
+	"se-school-case/internal/subscriber/errors"
+	"se-school-case/internal/subscriber/repo"
 	"se-school-case/pkg/model"
 )
 

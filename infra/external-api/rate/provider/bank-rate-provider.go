@@ -27,7 +27,7 @@ func NewBankRateFetchService() BankRateFetch {
 func (s *BankRateFetch) Fetch() (float64, error) {
 	resp, err := http.Get(RateBankApiUrl)
 	if err != nil || resp.StatusCode != http.StatusOK {
-		logrus.WithError(err).Error("error fetching exchange rates")
+		logrus.WithError(err).Error("error fetching exchange rate")
 		return s.DefaultCurrencyFetcher.Fetch()
 	}
 	defer func(Body io.ReadCloser) {
@@ -59,6 +59,6 @@ func (s *BankRateFetch) Fetch() (float64, error) {
 		}
 	}
 
-	logrus.Error("rates not found")
+	logrus.Error("rate not found")
 	return s.DefaultCurrencyFetcher.Fetch()
 }
