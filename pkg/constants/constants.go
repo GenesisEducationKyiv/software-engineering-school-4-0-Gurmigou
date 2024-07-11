@@ -30,5 +30,5 @@ func InitEnvValues() {
 	GOOGLE_PASSWORD = os.Getenv("GOOGLE_PASSWORD")
 	TEMPLATE_PATH = os.Getenv("TEMPLATE_PATH")
 	EMAIL_SEND_TIME = os.Getenv("EMAIL_SEND_TIME")
-	rabbitMQURL = os.Getenv("RABBITMQ_URL")
+	RABBIT_MQ_URL = os.Getenv("RABBITMQ_URL")
 }
