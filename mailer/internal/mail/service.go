@@ -2,10 +2,8 @@ package mail
 
 import (
 	"bytes"
-	"encoding/json"
 	"fmt"
 	amqp "github.com/rabbitmq/amqp091-go"
-	"log"
 	"net/smtp"
 	"se-school-case/pkg/constants"
 	"se-school-case/pkg/util"
@@ -35,44 +33,16 @@ type RabbitMQInterface interface {
 	Consume() (<-chan amqp.Delivery, error)
 }
 
+type MailServiceInterface interface {
+	SendEmail(subject string, templatePath string, sendTo string, rate string) error
+}
+
 type MailService struct {
 	rabbitMQConn RabbitMQInterface
 }
 
 func NewService(rabbitMQConn RabbitMQInterface) MailService {
 	return MailService{rabbitMQConn: rabbitMQConn}
-}
-
-func (s *MailService) StartConsumer() {
-	msgs, err := s.rabbitMQConn.Consume()
-	if err != nil {
-		log.Fatalf("Failed to start consumer: %v", err)
-	}
-
-	forever := make(chan bool)
-
-	go func() {
-		for d := range msgs {
-			var event Event
-			err := json.Unmarshal(d.Body, &event)
-			if err != nil {
-				log.Printf("Failed to unmarshal message: %v", err)
-				continue
-			}
-
-			for _, email := range event.Data.Subscribers {
-				err := s.SendEmail("Exchange rate notification",
-					constants.TEMPLATE_PATH, email,
-					fmt.Sprintf("%.2f", event.Data.ExchangeRate))
-				if err != nil {
-					log.Printf("Failed to send email: %v", err)
-				}
-			}
-		}
-	}()
-
-	log.Printf(" [*] Waiting for messages. To exit press CTRL+C")
-	<-forever
 }
 
 func (s *MailService) SendEmail(subject string, templatePath string, sendTo string, rate string) error {
