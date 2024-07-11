@@ -4,22 +4,22 @@ import (
 	"gorm.io/gorm"
 	"se-school-case/db"
 	"se-school-case/infra/external-api/rate/provider"
-	cronjobs "se-school-case/internal/cron-jobs/handler"
-	jobsservice "se-school-case/internal/cron-jobs/service"
-	"se-school-case/internal/mail"
+	cronjobs "se-school-case/internal/cron-jobs"
 	rateshandler "se-school-case/internal/rate/handler"
 	ratesrepo "se-school-case/internal/rate/repo"
 	ratesservice "se-school-case/internal/rate/service"
 	subhandler "se-school-case/internal/subscriber/handler"
 	subrepo "se-school-case/internal/subscriber/repo"
 	subservice "se-school-case/internal/subscriber/service"
+	queue "se-school-case/mailer/pkg"
 	"se-school-case/pkg/constants"
 )
+
+var ()
 
 type dependencies struct {
 	subscriberService subhandler.SubscriberInterface
 	rateService       rateshandler.RateInterface
-	mailService       mail.MailService
 	cronService       cronjobs.CronJobsInterface
 }
 
@@ -35,15 +35,14 @@ func wireDependencies() *dependencies {
 	bankFetchService := provider.NewBankRateFetchService()
 	exchangeFetchService := provider.NewExchangeApiRateFetch()
 	bankFetchService.SetNext(&exchangeFetchService)
+	rabbitMq, _ := queue.NewRabbitMQConnection(constants.RABBIT_MQ_URL, "mailer_events")
 
 	rateService := ratesservice.NewService(&rateRepository, &bankFetchService)
 	subscriberService := subservice.NewService(&subscriberRepository)
-	mailService := mail.NewService()
-	cronService := jobsservice.NewService(&mailService, &subscriberService, &rateService)
+	cronService := cronjobs.NewService(rabbitMq, &subscriberService, &rateService)
 	return &dependencies{
 		subscriberService: &subscriberService,
 		rateService:       &rateService,
-		mailService:       mailService,
 		cronService:       &cronService,
 	}
 }

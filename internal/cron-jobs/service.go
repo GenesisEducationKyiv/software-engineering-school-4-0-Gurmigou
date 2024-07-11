@@ -1,12 +1,26 @@
-package service
+package cron_jobs
 
 import (
+	"encoding/json"
 	"github.com/go-co-op/gocron"
 	"log"
 	"se-school-case/pkg/constants"
 	"se-school-case/pkg/model"
 	"time"
 )
+
+type Event struct {
+	EventID     string    `json:"eventId"`
+	EventType   string    `json:"eventType"`
+	AggregateID string    `json:"aggregateId"`
+	Timestamp   string    `json:"timestamp"`
+	Data        EventData `json:"data"`
+}
+
+type EventData struct {
+	ExchangeRate float64  `json:"exchangeRate"`
+	Subscribers  []string `json:"subscribers"`
+}
 
 type MailInterface interface {
 	SendEmail(subject string, templatePath string, sendTo string, rate float64) error
@@ -23,16 +37,21 @@ type SubscriberInterface interface {
 }
 
 type CronJobsService struct {
-	mailService       MailInterface
+	rabbitMQService   RabbitMQInterface
 	subscriberService SubscriberInterface
 	rateService       RateInterface
 }
 
-func NewService(mailService MailInterface,
+type RabbitMQInterface interface {
+	Publish(message string) error
+}
+
+func NewService(
+	rabbitMQService RabbitMQInterface,
 	subscriberService SubscriberInterface,
 	rateService RateInterface) CronJobsService {
 	return CronJobsService{
-		mailService:       mailService,
+		rabbitMQService:   rabbitMQService,
 		subscriberService: subscriberService,
 		rateService:       rateService,
 	}
@@ -60,11 +79,30 @@ func (s *CronJobsService) NotifySubscribers() error {
 		return err
 	}
 
-	for _, user := range users {
-		err := s.mailService.SendEmail("Exchange rate notification", constants.TEMPLATE_PATH, user.Email, rate.Rate)
-		if err != nil {
-			return err
-		}
+	subscribers := make([]string, len(users))
+	for i, user := range users {
+		subscribers[i] = user.Email
+	}
+
+	event := Event{
+		EventID:     "1",
+		EventType:   "RateNotification",
+		AggregateID: "rate-1",
+		Timestamp:   time.Now().Format(time.RFC3339),
+		Data: EventData{
+			ExchangeRate: rate.Rate,
+			Subscribers:  subscribers,
+		},
+	}
+
+	message, err := json.Marshal(event)
+	if err != nil {
+		return err
+	}
+
+	err = s.rabbitMQService.Publish(string(message))
+	if err != nil {
+		return err
 	}
 	return nil
 }

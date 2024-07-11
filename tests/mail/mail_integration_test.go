@@ -2,9 +2,9 @@ package mail
 
 import (
 	"errors"
-	"se-school-case/internal/mail/service"
 	ratemocks "se-school-case/internal/rate/handler/mock"
 	submocks "se-school-case/internal/subscriber/handler/mock"
+	"se-school-case/mailer/internal/mail"
 	"se-school-case/pkg/constants"
 	"testing"
 
@@ -58,7 +58,7 @@ func TestMailService_SendEmailToAll(t *testing.T) {
 			mockSubscriberService.EXPECT().GetAll().Return(tt.expectedUsers, nil).AnyTimes()
 			mockRateService.EXPECT().GetRate().Return(tt.expectedRate, tt.rateError).AnyTimes()
 
-			mailService := service.NewService(mockSubscriberService, mockRateService)
+			mailService := mail.NewService(mockSubscriberService, mockRateService)
 
 			// Act
 			err := mailService.SendEmailToAll("Test Subject", "../../util/resource/email.html")

@@ -1,4 +1,4 @@
-package handler
+package cron_jobs
 
 import (
 	"github.com/gin-gonic/gin"
