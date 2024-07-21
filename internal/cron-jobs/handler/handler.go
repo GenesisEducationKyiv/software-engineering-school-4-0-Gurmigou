@@ -1,23 +1,22 @@
-package handler
+package cron_jobs
 
 import (
 	"github.com/gin-gonic/gin"
 	"net/http"
 	"se-school-case/internal"
-	"se-school-case/internal/cron-jobs/service"
-	"se-school-case/pkg/constants"
 )
 
 type CronJobsInterface interface {
 	StartScheduler()
+	NotifySubscribers() error
 }
 
 type CronJobsHandler struct {
-	mailService service.MailInterface
+	cronJobsService CronJobsInterface
 }
 
-func NewHandler(mailService service.MailInterface) internal.Registrable {
-	return &CronJobsHandler{mailService: mailService}
+func NewHandler(cronJobsService CronJobsInterface) internal.Registrable {
+	return &CronJobsHandler{cronJobsService: cronJobsService}
 }
 
 func (h *CronJobsHandler) Register(engine *gin.Engine) {
@@ -25,15 +24,15 @@ func (h *CronJobsHandler) Register(engine *gin.Engine) {
 }
 
 // swagger:route POST /api/notify CronJobs postExplicitlyNotify
-// Explicitly notify all subscriber
+// Explicitly notify all subscribers
 //
-// Sends an email notification to all subscriber about the exchange rate.
+// Sends an email notification to all subscribers about the exchange rate.
 //
 // responses:
 //
 //	200: body:gin.H{"message": "Successfully notified all users."}
 func (h *CronJobsHandler) ExplicitlyNotify(context *gin.Context) {
-	err := h.mailService.SendEmailToAll("Exchange rate notification", constants.TEMPLATE_PATH)
+	err := h.cronJobsService.NotifySubscribers()
 	if err != nil {
 		context.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to notify users - " + err.Error()})
 	} else {

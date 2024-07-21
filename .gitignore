@@ -2,3 +2,4 @@
 .github/.keep
 .env
 /vendor/
+mailer/vendor/
