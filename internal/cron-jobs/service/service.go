@@ -4,8 +4,10 @@ import (
 	"encoding/json"
 	"github.com/go-co-op/gocron"
 	"log"
+	"math/rand"
 	"se-school-case/pkg/constants"
 	"se-school-case/pkg/model"
+	"strconv"
 	"time"
 )
 
@@ -85,7 +87,7 @@ func (s *CronJobsService) NotifySubscribers() error {
 	}
 
 	event := Event{
-		EventID:     "1",
+		EventID:     strconv.Itoa(rand.Intn(9999)),
 		EventType:   "RateNotification",
 		AggregateID: "rate-1",
 		Timestamp:   time.Now().Format(time.RFC3339),

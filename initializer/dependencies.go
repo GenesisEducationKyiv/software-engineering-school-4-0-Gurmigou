@@ -12,11 +12,9 @@ import (
 	subhandler "se-school-case/internal/subscriber/handler"
 	subrepo "se-school-case/internal/subscriber/repo"
 	subservice "se-school-case/internal/subscriber/service"
-	queue "se-school-case/mailer/pkg"
 	"se-school-case/pkg/constants"
+	"se-school-case/pkg/queue"
 )
-
-var ()
 
 type dependencies struct {
 	subscriberService subhandler.SubscriberInterface
@@ -36,7 +34,7 @@ func wireDependencies() *dependencies {
 	bankFetchService := provider.NewBankRateFetchService()
 	exchangeFetchService := provider.NewExchangeApiRateFetch()
 	bankFetchService.SetNext(&exchangeFetchService)
-	rabbitMq, _ := queue.NewRabbitMQConnection(constants.RABBIT_MQ_URL, "mailer_events")
+	rabbitMq, _ := queue.NewRabbitMQConnection(constants.RABBITMQ_URL, constants.QUEUE_NAME)
 
 	rateService := ratesservice.NewService(&rateRepository, &bankFetchService)
 	subscriberService := subservice.NewService(&subscriberRepository)

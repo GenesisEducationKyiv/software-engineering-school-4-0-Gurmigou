@@ -5,7 +5,7 @@ import (
 	"fmt"
 	amqp "github.com/rabbitmq/amqp091-go"
 	"net/smtp"
-	"se-school-case/pkg/constants"
+	"se-school-case/mailer/pkg/constants"
 	"se-school-case/pkg/util"
 	"text/template"
 )
