@@ -4,7 +4,8 @@ import (
 	"gorm.io/gorm"
 	"se-school-case/db"
 	"se-school-case/infra/external-api/rate/provider"
-	cronjobs "se-school-case/internal/cron-jobs"
+	cronjobshandler "se-school-case/internal/cron-jobs/handler"
+	cronjobsservice "se-school-case/internal/cron-jobs/service"
 	rateshandler "se-school-case/internal/rate/handler"
 	ratesrepo "se-school-case/internal/rate/repo"
 	ratesservice "se-school-case/internal/rate/service"
@@ -20,7 +21,7 @@ var ()
 type dependencies struct {
 	subscriberService subhandler.SubscriberInterface
 	rateService       rateshandler.RateInterface
-	cronService       cronjobs.CronJobsInterface
+	cronService       cronjobshandler.CronJobsInterface
 }
 
 func wireDependencies() *dependencies {
@@ -39,7 +40,7 @@ func wireDependencies() *dependencies {
 
 	rateService := ratesservice.NewService(&rateRepository, &bankFetchService)
 	subscriberService := subservice.NewService(&subscriberRepository)
-	cronService := cronjobs.NewService(rabbitMq, &subscriberService, &rateService)
+	cronService := cronjobsservice.NewService(rabbitMq, &subscriberService, &rateService)
 	return &dependencies{
 		subscriberService: &subscriberService,
 		rateService:       &rateService,

@@ -21,7 +21,7 @@ func NewApi() Api {
 	deps.cronService.StartScheduler()
 	rateshandler.NewHandler(deps.rateService).Register(engine)
 	subhandler.NewHandler(deps.subscriberService).Register(engine)
-	cronjobs.NewHandler(&deps.cronService).Register(engine)
+	cronjobs.NewHandler(deps.cronService).Register(engine)
 	return &api{engine}
 }
 
