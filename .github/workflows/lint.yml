@@ -29,7 +29,7 @@ jobs:
 
       - name: go work init and download
         run: |
-          echo 'go 1.22' > go.work
+          echo 'go 1.22.3' > go.work
           echo 'use .' >> go.work
           echo 'use ./mailer' >> go.work
           go mod tidy
