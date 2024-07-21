@@ -4,10 +4,10 @@ import (
 	"bytes"
 	"fmt"
 	amqp "github.com/rabbitmq/amqp091-go"
+	"mailer/pkg/constants"
 	"net/smtp"
-	"se-school-case/mailer/pkg/constants"
-	"se-school-case/pkg/util"
 	"text/template"
+	"time"
 )
 
 type Event struct {
@@ -45,6 +45,11 @@ func NewService(rabbitMQConn RabbitMQInterface) MailService {
 	return MailService{rabbitMQConn: rabbitMQConn}
 }
 
+func getCurrentDateString() string {
+	currentDate := time.Now().Format("2006-01-02 15:04")
+	return currentDate
+}
+
 func (s *MailService) SendEmail(subject string, templatePath string, sendTo string, rate string) error {
 	var body bytes.Buffer
 	t, err := template.ParseFiles(templatePath)
@@ -54,7 +59,7 @@ func (s *MailService) SendEmail(subject string, templatePath string, sendTo stri
 
 	err = t.Execute(&body, EmailSendDto{
 		Email:       sendTo,
-		CurrentDate: util.GetCurrentDateString(),
+		CurrentDate: getCurrentDateString(),
 		Rate:        rate,
 	})
 	if err != nil {

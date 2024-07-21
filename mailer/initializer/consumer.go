@@ -4,8 +4,8 @@ import (
 	"encoding/json"
 	"fmt"
 	"log"
-	"se-school-case/mailer/internal/mail"
-	"se-school-case/mailer/pkg/constants"
+	"mailer/internal/mail"
+	"mailer/pkg/constants"
 )
 
 type ConsumerApplication interface {

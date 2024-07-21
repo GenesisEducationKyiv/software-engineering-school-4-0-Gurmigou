@@ -3,7 +3,7 @@ package initializer
 import (
 	"github.com/joho/godotenv"
 	"log"
-	"se-school-case/mailer/pkg/constants"
+	"mailer/pkg/constants"
 )
 
 func InitEnv() {

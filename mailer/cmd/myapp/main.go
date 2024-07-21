@@ -1,6 +1,6 @@
 package main
 
-import "se-school-case/mailer/initializer"
+import "mailer/initializer"
 
 func main() {
 	consumer := initializer.NewConsumer()

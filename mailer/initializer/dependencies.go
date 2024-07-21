@@ -2,9 +2,9 @@ package initializer
 
 import (
 	"log"
-	"se-school-case/mailer/internal/mail"
-	"se-school-case/mailer/pkg/constants"
-	"se-school-case/mailer/pkg/queue"
+	"mailer/internal/mail"
+	"mailer/pkg/constants"
+	"mailer/pkg/queue"
 )
 
 type dependencies struct {
