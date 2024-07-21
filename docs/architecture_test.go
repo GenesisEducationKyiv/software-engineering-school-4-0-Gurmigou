@@ -19,7 +19,7 @@ func TestArchitecture(t *testing.T) {
 			{
 				Package: "initializer",
 				ShouldOnlyDependsOn: &config.Dependencies{
-					Internal: []string{"internal", "pkg", "db"},
+					Internal: []string{"internal/**", "infra/**", "pkg/**", "db"},
 				},
 			},
 			{
@@ -29,34 +29,34 @@ func TestArchitecture(t *testing.T) {
 				},
 			},
 			{
-				Package: "internal/cron-jobs",
+				Package: "internal/cron-jobs/**",
 				ShouldOnlyDependsOn: &config.Dependencies{
-					Internal: []string{"internal", "pkg/constants"},
+					Internal: []string{"internal/**", "pkg/constants"},
 				},
 			},
 			{
-				Package: "internal/external-api/rate",
+				Package: "internal/external-api/rate/**",
 				ShouldOnlyDependsOn: &config.Dependencies{
 					Internal: []string{"pkg/constants", "pkg/util"},
 				},
 			},
 			{
-				Package: "internal/mails",
+				Package: "internal/mail/**",
 				ShouldOnlyDependsOn: &config.Dependencies{
 					Internal: []string{
-						"internal/cron-jobs", "internal/rates", "internal/subscribers",
+						"internal/cron-jobs/**", "internal/rate/**", "internal/subscriber/**",
 						"pkg/constants", "pkg/util", "pkg/model",
 					},
 				},
 			},
 			{
-				Package: "internal/rates",
+				Package: "internal/rate/**",
 				ShouldOnlyDependsOn: &config.Dependencies{
-					Internal: []string{"pkg/model", "pkg/constants", "internal/external-api/rate"},
+					Internal: []string{"pkg/model", "pkg/constants", "infra/external-api/rate/**"},
 				},
 			},
 			{
-				Package: "internal/subscribers",
+				Package: "internal/subscriber",
 				ShouldOnlyDependsOn: &config.Dependencies{
 					Internal: []string{"pkg/model"},
 				},
