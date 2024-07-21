@@ -1,41 +1,66 @@
-name: Lint
+name: lint
 
 on:
   push:
     branches:
       - '*'
-  pull_request:
-    branches:
-      - '*'
+  pull_request_target:
+    types:
+      - opened
+      - edited
+      - synchronize
 
 jobs:
-  lint:
+  golangci-lint-main:
+    name: golangci-lint for main project
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v2
+      - name: checkout code
+        uses: actions/checkout@v4
 
-      - name: Cache Go modules
-        uses: actions/cache@v2
+      - name: set up go
+        uses: actions/setup-go@v4
         with:
-          path: |
-            ~/.cache/go-build
-            /go/pkg/mod
-          key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
-          restore-keys: |
-            ${{ runner.os }}-go-
+          go-version: 1.22
 
-      - name: Set up Go
-        uses: actions/setup-go@v3
+      - name: install golangci-lint
+        run: go install github.com/golangci/golangci-lint/cmd/golangci-lint@latest
+
+      - name: go work init and download
+        run: |
+          echo 'go 1.22' > go.work
+          echo 'use .' >> go.work
+          echo 'use ./mailer' >> go.work
+          go mod tidy
+          go mod download
+
+      - name: run golangci-lint
+        run: golangci-lint run ./...
+
+  golangci-lint-mailer:
+    name: golangci-lint for mailer
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: checkout code
+        uses: actions/checkout@v4
+
+      - name: set up go
+        uses: actions/setup-go@v4
         with:
-          go-version: '1.22.3'
+          go-version: 1.22
 
-      - name: Install dependencies
-        run: go mod download
+      - name: install golangci-lint
+        run: go install github.com/golangci/golangci-lint/cmd/golangci-lint@latest
 
-      - name: Install GolangCI-Lint
-        run: go install github.com/golangci/golangci-lint/cmd/golangci-lint@v1.52.2
+      - name: go mod tidy and download for mailer
+        run: |
+          cd mailer
+          go mod tidy
+          go mod download
 
-      - name: Run GolangCI-Lint
-        run: golangci-lint run ./... --timeout 5m -v
+      - name: run golangci-lint for mailer
+        run: |
+          cd mailer
+          golangci-lint run ./...
