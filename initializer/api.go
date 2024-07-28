@@ -2,7 +2,7 @@ package initializer
 
 import (
 	"github.com/gin-gonic/gin"
-	cronjobs "se-school-case/internal/cron-jobs/handler"
+	cronjobs "se-school-case/internal/cron-jobs"
 	rateshandler "se-school-case/internal/rate/handler"
 	subhandler "se-school-case/internal/subscriber/handler"
 )

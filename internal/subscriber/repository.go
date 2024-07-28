@@ -1,4 +1,4 @@
-package repo
+package subscriber
 
 import (
 	"errors"
@@ -7,8 +7,6 @@ import (
 )
 
 type SubscriberRepositoryInterface interface {
-	GetAll() ([]model.User, error)
-	AddUserEmail(user model.User) error
 	CheckIfUserExists(email string) (bool, error)
 }
 
@@ -18,19 +16,6 @@ type SubscriberRepository struct {
 
 func NewSubscriberRepository(db *gorm.DB) SubscriberRepository {
 	return SubscriberRepository{db: db}
-}
-
-func (r *SubscriberRepository) GetAll() ([]model.User, error) {
-	var users []model.User
-	err := r.db.Find(&users).Error
-	return users, err
-}
-
-func (r *SubscriberRepository) AddUserEmail(user model.User) error {
-	if err := r.db.Create(&user).Error; err != nil {
-		return err
-	}
-	return nil
 }
 
 func (r *SubscriberRepository) CheckIfUserExists(email string) (bool, error) {

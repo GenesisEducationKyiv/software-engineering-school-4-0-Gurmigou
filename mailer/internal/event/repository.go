@@ -1,4 +1,4 @@
-package cron_jobs
+package event
 
 import (
 	"errors"

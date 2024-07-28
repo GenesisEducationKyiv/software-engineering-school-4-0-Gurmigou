@@ -4,14 +4,12 @@ import (
 	"gorm.io/gorm"
 	"se-school-case/db"
 	"se-school-case/infra/external-api/rate/provider"
-	cronjobshandler "se-school-case/internal/cron-jobs/handler"
-	cronjobsservice "se-school-case/internal/cron-jobs/service"
+	cronjobsservice "se-school-case/internal/cron-jobs"
 	rateshandler "se-school-case/internal/rate/handler"
 	ratesrepo "se-school-case/internal/rate/repo"
 	ratesservice "se-school-case/internal/rate/service"
+	subservice "se-school-case/internal/subscriber"
 	subhandler "se-school-case/internal/subscriber/handler"
-	subrepo "se-school-case/internal/subscriber/repo"
-	subservice "se-school-case/internal/subscriber/service"
 	"se-school-case/pkg/constants"
 	"se-school-case/pkg/queue"
 )
@@ -19,7 +17,7 @@ import (
 type dependencies struct {
 	subscriberService subhandler.SubscriberInterface
 	rateService       rateshandler.RateInterface
-	cronService       cronjobshandler.CronJobsInterface
+	cronService       cronjobsservice.CronJobsInterface
 }
 
 func wireDependencies() *dependencies {
@@ -28,7 +26,7 @@ func wireDependencies() *dependencies {
 
 	// Initialize repositories
 	rateRepository := ratesrepo.NewRateRepository(db)
-	subscriberRepository := subrepo.NewSubscriberRepository(db)
+	subscriberRepository := subservice.NewSubscriberRepository(db)
 
 	// Initialize chain of Rate fetchers
 	bankFetchService := provider.NewBankRateFetchService()
