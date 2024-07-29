@@ -9,6 +9,7 @@ func NewApi() *Api {
 	return &Api{deps: *deps}
 }
 
-func (a *Api) StartConsumer() {
-	a.deps.cronJobsConsumer.ConsumeEvents()
+func (a *Api) StartApplication() {
+	a.deps.eventConsumer.ConsumeEvents()
+	a.deps.cronJobsMailer.StartScheduler()
 }

@@ -3,12 +3,11 @@ package event
 import (
 	"encoding/json"
 	"log"
-	cron_jobs "mailer/internal/cron-jobs"
+	"mailer/internal"
+	cronjobs "mailer/internal/cron-jobs"
 	"mailer/internal/mail"
 	"mailer/pkg/queue"
 )
-
-var CurrentRate float64 = 0
 
 type EventType string
 
@@ -34,15 +33,15 @@ type EventData struct {
 }
 
 type EventConsumerService struct {
-	repo          Repository
+	repo          internal.Repository
 	mailService   mail.MailService
-	mailerCronJob cron_jobs.MailerCronJob
+	mailerCronJob cronjobs.MailerCronJob
 	rabbitMQ      queue.RabbitMQ
 }
 
-func NewCronJobConsumerService(repo Repository,
+func NewEventConsumerService(repo internal.Repository,
 	mailService mail.MailService,
-	mailerCronJob cron_jobs.MailerCronJob,
+	mailerCronJob cronjobs.MailerCronJob,
 	rabbitMQ queue.RabbitMQ) EventConsumerService {
 	return EventConsumerService{
 		repo:          repo,
@@ -85,7 +84,7 @@ func (c *EventConsumerService) ConsumeEvents() {
 }
 
 func (c *EventConsumerService) handleSubscribeEvent(event Event) {
-	user := &User{
+	user := &internal.User{
 		Email: event.Data.Email,
 	}
 
@@ -133,7 +132,7 @@ func (c *EventConsumerService) handleUnsubscribeEvent(event Event) {
 }
 
 func (c *EventConsumerService) handleCurrencyRateNotificationEvent(event Event) {
-	CurrentRate = event.Data.ExchangeRate
+	internal.CurrentRate = event.Data.ExchangeRate
 }
 
 func (c *EventConsumerService) handleExplicitlyNotify() {

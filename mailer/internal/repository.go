@@ -1,4 +1,4 @@
-package event
+package internal
 
 import (
 	"errors"
@@ -9,6 +9,8 @@ type User struct {
 	gorm.Model
 	Email string `gorm:"uniqueIndex;not null"`
 }
+
+var CurrentRate float64 = 0
 
 type Repository interface {
 	Create(subscriber *User) error
