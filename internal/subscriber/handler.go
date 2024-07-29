@@ -1,4 +1,4 @@
-package handler
+package subscriber
 
 import (
 	"encoding/json"
@@ -6,7 +6,6 @@ import (
 	"math/rand"
 	"net/http"
 	cronjobs "se-school-case/internal/cron-jobs"
-	"se-school-case/internal/subscriber"
 	"se-school-case/pkg/queue"
 	"strconv"
 	"time"
@@ -27,7 +26,7 @@ func NewHandler(subscriberService SubscriberInterface, mq queue.RabbitMQ) *Handl
 
 func (h *Handler) Register(engine *gin.Engine) {
 	engine.POST("/api/subscribe", h.AddUserEmail)
-	engine.DELETE("/api/unsubscribe", h.DeleteUserEmail)
+	engine.POST("/api/unsubscribe", h.DeleteUserEmail)
 }
 
 // swagger:route POST /api/subscribe Subscriber addUserEmail
@@ -42,7 +41,7 @@ func (h *Handler) Register(engine *gin.Engine) {
 //	409: body:gin.H{"errors": "Email already exists"}
 //	500: body:gin.H{"errors": "Failed to add email"}
 func (h *Handler) AddUserEmail(context *gin.Context) {
-	var input subscriber.EmailDto
+	var input EmailDto
 
 	if err := context.ShouldBind(&input); err != nil {
 		context.JSON(http.StatusBadRequest, gin.H{"errors": "Email request body is not correct."})
@@ -96,7 +95,7 @@ func (h *Handler) AddUserEmail(context *gin.Context) {
 //	404: body:gin.H{"errors": "Email not found"}
 //	500: body:gin.H{"errors": "Failed to process request"}
 func (h *Handler) DeleteUserEmail(context *gin.Context) {
-	var input subscriber.EmailDto
+	var input EmailDto
 
 	if err := context.ShouldBind(&input); err != nil {
 		context.JSON(http.StatusBadRequest, gin.H{"errors": "Email request body is not correct."})

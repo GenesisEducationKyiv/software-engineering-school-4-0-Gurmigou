@@ -1,4 +1,4 @@
-package repo
+package rate
 
 import (
 	"gorm.io/gorm"

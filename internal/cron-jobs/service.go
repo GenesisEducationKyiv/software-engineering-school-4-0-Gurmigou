@@ -39,8 +39,7 @@ type RateInterface interface {
 }
 
 type SubscriberInterface interface {
-	Add(email string) error
-	GetAll() ([]model.User, error)
+	Exists(email string) (bool, error)
 }
 
 type CronJobsService struct {
@@ -67,7 +66,13 @@ func NewService(
 func (s *CronJobsService) StartScheduler() {
 	scheduler := gocron.NewScheduler(time.Local)
 
-	_, err := scheduler.Every(1).Hour().Do(s.NotifyAboutExchangeRate)
+	// Notify immediately on startup
+	err := s.NotifyAboutExchangeRate()
+	if err != nil {
+		return
+	}
+
+	_, err = scheduler.Every(1).Hour().Do(s.NotifyAboutExchangeRate)
 	if err != nil {
 		log.Fatalf("Error scheduling exchange rate notifications: %v", err)
 	}
