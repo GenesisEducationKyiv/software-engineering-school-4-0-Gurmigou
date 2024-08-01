@@ -8,7 +8,8 @@ import (
 
 type CronJobsInterface interface {
 	StartScheduler()
-	NotifySubscribers() error
+	NotifyAboutExchangeRate() error
+	ExplicitlyNotify() error
 }
 
 type CronJobsHandler struct {
@@ -32,7 +33,7 @@ func (h *CronJobsHandler) Register(engine *gin.Engine) {
 //
 //	200: body:gin.H{"message": "Successfully notified all users."}
 func (h *CronJobsHandler) ExplicitlyNotify(context *gin.Context) {
-	err := h.cronJobsService.NotifySubscribers()
+	err := h.cronJobsService.ExplicitlyNotify()
 	if err != nil {
 		context.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to notify users - " + err.Error()})
 	} else {

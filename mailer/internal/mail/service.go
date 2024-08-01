@@ -10,19 +10,6 @@ import (
 	"time"
 )
 
-type Event struct {
-	EventID     string    `json:"eventId"`
-	EventType   string    `json:"eventType"`
-	AggregateID string    `json:"aggregateId"`
-	Timestamp   string    `json:"timestamp"`
-	Data        EventData `json:"data"`
-}
-
-type EventData struct {
-	ExchangeRate float64  `json:"exchangeRate"`
-	Subscribers  []string `json:"subscribers"`
-}
-
 type EmailSendDto struct {
 	Email       string
 	CurrentDate string

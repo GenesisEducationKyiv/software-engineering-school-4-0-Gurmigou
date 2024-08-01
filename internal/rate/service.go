@@ -1,21 +1,20 @@
-package service
+package rate
 
 import (
 	"errors"
 	"log"
 	"se-school-case/infra/external-api/rate"
-	"se-school-case/internal/rate/repo"
 	"se-school-case/pkg/constants"
 	"se-school-case/pkg/model"
 	"time"
 )
 
 type RateService struct {
-	repository   repo.RateRepositoryInterface
+	repository   RateRepositoryInterface
 	fetchService rate.CurrencyFetcher
 }
 
-func NewService(repository repo.RateRepositoryInterface, currencyFetcher rate.CurrencyFetcher) RateService {
+func NewService(repository RateRepositoryInterface, currencyFetcher rate.CurrencyFetcher) RateService {
 	return RateService{repository: repository, fetchService: currencyFetcher}
 }
 

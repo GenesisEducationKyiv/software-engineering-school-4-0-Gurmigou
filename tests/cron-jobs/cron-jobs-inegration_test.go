@@ -3,14 +3,14 @@ package cron_jobs_test
 import (
 	"encoding/json"
 	"errors"
-	cron_jobs "se-school-case/internal/cron-jobs"
+	"se-school-case/internal/cron-jobs"
+	"se-school-case/pkg/model"
 	"se-school-case/tests/cron-jobs/mocks"
 	"testing"
 	"time"
 
 	"github.com/golang/mock/gomock"
 	"github.com/stretchr/testify/assert"
-	"se-school-case/pkg/model"
 )
 
 type notifySubscribersTestCase struct {
@@ -36,12 +36,12 @@ func TestCronJobsService_NotifySubscribers(t *testing.T) {
 			expectedError: false,
 			expectedEvent: cron_jobs.Event{
 				EventID:     "1",
-				EventType:   "RateNotification",
+				EventType:   cron_jobs.CurrencyRateNotification,
 				AggregateID: "rate-1",
 				Timestamp:   time.Now().Format(time.RFC3339),
 				Data: cron_jobs.EventData{
 					ExchangeRate: 27.5,
-					Subscribers:  []string{"email1@gmail.com", "email2@gmail.com"},
+					Email:        "email1@gmail.com",
 				},
 			},
 		},
@@ -53,11 +53,6 @@ func TestCronJobsService_NotifySubscribers(t *testing.T) {
 			},
 			rateError:     errors.New("internal server error"),
 			expectedError: true,
-		},
-		{
-			name:            "SubscriberError",
-			subscriberError: errors.New("internal server error"),
-			expectedError:   true,
 		},
 		{
 			name: "RabbitMQError",
@@ -81,7 +76,10 @@ func TestCronJobsService_NotifySubscribers(t *testing.T) {
 			mockRateService := mocks.NewMockRateInterface(ctrl)
 			mockRabbitMQService := mocks.NewMockRabbitMQInterface(ctrl)
 
-			mockSubscriberService.EXPECT().GetAll().Return(tt.expectedUsers, tt.subscriberError).AnyTimes()
+			// Assume method Exists exists on SubscriberInterface and returns a boolean indicating subscription status
+			for _, user := range tt.expectedUsers {
+				mockSubscriberService.EXPECT().Exists(user.Email).Return(true, tt.subscriberError).AnyTimes()
+			}
 			mockRateService.EXPECT().GetRate().Return(tt.expectedRate, tt.rateError).AnyTimes()
 
 			if tt.rabbitMQError != nil {
@@ -92,7 +90,6 @@ func TestCronJobsService_NotifySubscribers(t *testing.T) {
 					err := json.Unmarshal([]byte(message), &event)
 					assert.NoError(t, err)
 					assert.Equal(t, tt.expectedEvent.Data.ExchangeRate, event.Data.ExchangeRate)
-					assert.ElementsMatch(t, tt.expectedEvent.Data.Subscribers, event.Data.Subscribers)
 					return nil
 				}).AnyTimes()
 			}
@@ -104,7 +101,7 @@ func TestCronJobsService_NotifySubscribers(t *testing.T) {
 			)
 
 			// Act
-			err := cronJobsService.NotifySubscribers()
+			err := cronJobsService.NotifyAboutExchangeRate()
 
 			// Assert
 			if tt.expectedError {

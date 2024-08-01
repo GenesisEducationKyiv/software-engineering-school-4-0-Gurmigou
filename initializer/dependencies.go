@@ -4,22 +4,19 @@ import (
 	"gorm.io/gorm"
 	"se-school-case/db"
 	"se-school-case/infra/external-api/rate/provider"
-	cronjobshandler "se-school-case/internal/cron-jobs/handler"
-	cronjobsservice "se-school-case/internal/cron-jobs/service"
+	cronjobsservice "se-school-case/internal/cron-jobs"
+	ratesrepo "se-school-case/internal/rate"
 	rateshandler "se-school-case/internal/rate/handler"
-	ratesrepo "se-school-case/internal/rate/repo"
-	ratesservice "se-school-case/internal/rate/service"
-	subhandler "se-school-case/internal/subscriber/handler"
-	subrepo "se-school-case/internal/subscriber/repo"
-	subservice "se-school-case/internal/subscriber/service"
+	subservice "se-school-case/internal/subscriber"
 	"se-school-case/pkg/constants"
 	"se-school-case/pkg/queue"
 )
 
 type dependencies struct {
-	subscriberService subhandler.SubscriberInterface
+	subscriberService subservice.SubscriberInterface
 	rateService       rateshandler.RateInterface
-	cronService       cronjobshandler.CronJobsInterface
+	cronService       cronjobsservice.CronJobsInterface
+	rabbitMQ          queue.RabbitMQ
 }
 
 func wireDependencies() *dependencies {
@@ -28,7 +25,7 @@ func wireDependencies() *dependencies {
 
 	// Initialize repositories
 	rateRepository := ratesrepo.NewRateRepository(db)
-	subscriberRepository := subrepo.NewSubscriberRepository(db)
+	subscriberRepository := subservice.NewSubscriberRepository(db)
 
 	// Initialize chain of Rate fetchers
 	bankFetchService := provider.NewBankRateFetchService()
@@ -36,7 +33,7 @@ func wireDependencies() *dependencies {
 	bankFetchService.SetNext(&exchangeFetchService)
 	rabbitMq, _ := queue.NewRabbitMQConnection(constants.RABBITMQ_URL, constants.QUEUE_NAME)
 
-	rateService := ratesservice.NewService(&rateRepository, &bankFetchService)
+	rateService := ratesrepo.NewService(&rateRepository, &bankFetchService)
 	subscriberService := subservice.NewService(&subscriberRepository)
 	cronService := cronjobsservice.NewService(rabbitMq, &subscriberService, &rateService)
 	return &dependencies{

@@ -37,8 +37,6 @@ jobs:
 
       - name: run golangci-lint
         run: golangci-lint run ./...
-        with:
-          args: --fix
 
   golangci-lint-mailer:
     name: golangci-lint for mailer
