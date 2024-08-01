@@ -1,0 +1,56 @@
+version: '3.8'
+
+services:
+  db:
+    image: postgres:latest
+    container_name: postgres
+    ports:
+      - "5432:5432"
+    env_file:
+      - ../.env
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  rabbitmq:
+    image: rabbitmq:3-management
+    container_name: rabbitmq
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    environment:
+      RABBITMQ_DEFAULT_USER: guest
+      RABBITMQ_DEFAULT_PASS: guest
+
+  app:
+    build:
+      context: ..
+      dockerfile: build/Dockerfile
+    container_name: se-school-case
+    ports:
+      - "3000:3000"
+    depends_on:
+      db:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_started
+    env_file:
+      - ../.env
+
+  mailer:
+    build:
+      context: ./mailer
+      dockerfile: Dockerfile
+    container_name: mailer-service
+    depends_on:
+      rabbitmq:
+        condition: service_started
+    env_file:
+      - ../.env
+
+volumes:
+  postgres_data:
