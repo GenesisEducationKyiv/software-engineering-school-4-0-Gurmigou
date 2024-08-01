@@ -3,10 +3,9 @@ package cron_jobs
 import (
 	"encoding/json"
 	"github.com/go-co-op/gocron"
+	"github.com/google/uuid"
 	"log"
-	"math/rand"
 	"se-school-case/pkg/model"
-	"strconv"
 	"time"
 )
 
@@ -87,7 +86,7 @@ func (s *CronJobsService) NotifyAboutExchangeRate() error {
 	}
 
 	event := Event{
-		EventID:     strconv.Itoa(rand.Intn(9999)),
+		EventID:     uuid.New().String(),
 		EventType:   CurrencyRateNotification,
 		AggregateID: "rate-1",
 		Timestamp:   time.Now().Format(time.RFC3339),
@@ -110,7 +109,7 @@ func (s *CronJobsService) NotifyAboutExchangeRate() error {
 
 func (s *CronJobsService) ExplicitlyNotify() error {
 	event := Event{
-		EventID:     strconv.Itoa(rand.Intn(9999)),
+		EventID:     uuid.New().String(),
 		EventType:   ExplicitlyNotify,
 		AggregateID: "rate-1",
 		Timestamp:   time.Now().Format(time.RFC3339),

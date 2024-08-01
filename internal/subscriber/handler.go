@@ -3,11 +3,10 @@ package subscriber
 import (
 	"encoding/json"
 	"github.com/gin-gonic/gin"
-	"math/rand"
+	"github.com/google/uuid"
 	"net/http"
 	cronjobs "se-school-case/internal/cron-jobs"
 	"se-school-case/pkg/queue"
-	"strconv"
 	"time"
 )
 
@@ -59,7 +58,7 @@ func (h *Handler) AddUserEmail(context *gin.Context) {
 	}
 
 	event := cronjobs.Event{
-		EventID:     strconv.Itoa(rand.Intn(9999)),
+		EventID:     uuid.New().String(),
 		EventType:   cronjobs.Subscribe,
 		AggregateID: "sub-1",
 		Timestamp:   time.Now().Format(time.RFC3339),
@@ -113,7 +112,7 @@ func (h *Handler) DeleteUserEmail(context *gin.Context) {
 	}
 
 	event := cronjobs.Event{
-		EventID:     strconv.Itoa(rand.Intn(9999)),
+		EventID:     uuid.New().String(),
 		EventType:   cronjobs.Unsubscribe,
 		AggregateID: "sub-1",
 		Timestamp:   time.Now().Format(time.RFC3339),

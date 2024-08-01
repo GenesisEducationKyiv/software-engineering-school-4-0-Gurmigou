@@ -88,7 +88,6 @@ func (c *EventConsumerService) handleSubscribeEvent(event Event) {
 		Email: event.Data.Email,
 	}
 
-	// Check if user already exists
 	existingUser, err := c.repo.FindByEmail(event.Data.Email)
 	if err != nil {
 		log.Printf("Error checking if user exists: %v", err)
@@ -100,7 +99,6 @@ func (c *EventConsumerService) handleSubscribeEvent(event Event) {
 		return
 	}
 
-	// Add the user to the repository
 	if err := c.repo.Create(user); err != nil {
 		log.Printf("Error creating user: %v", err)
 		return
@@ -110,7 +108,6 @@ func (c *EventConsumerService) handleSubscribeEvent(event Event) {
 }
 
 func (c *EventConsumerService) handleUnsubscribeEvent(event Event) {
-	// Find the user by email
 	user, err := c.repo.FindByEmail(event.Data.Email)
 	if err != nil {
 		log.Printf("Error finding user: %v", err)
@@ -122,7 +119,6 @@ func (c *EventConsumerService) handleUnsubscribeEvent(event Event) {
 		return
 	}
 
-	// Delete the user from the repository
 	if err := c.repo.DeleteOne(user); err != nil {
 		log.Printf("Error deleting user: %v", err)
 		return

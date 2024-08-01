@@ -10,6 +10,6 @@ func NewApi() *Api {
 }
 
 func (a *Api) StartApplication() {
-	a.deps.eventConsumer.ConsumeEvents()
 	a.deps.cronJobsMailer.StartScheduler()
+	a.deps.eventConsumer.ConsumeEvents()
 }
